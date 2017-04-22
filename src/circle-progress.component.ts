@@ -3,9 +3,12 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
 export interface CircleProgressOptionsInterface {
+  class?: string;
+  backgroundColor?: string;
+  backgroundOpacity?: number;
+  percent?: number;
   radius?: number;
   space?: number;
-  percent?: number;
   toFixed?: number;
   maxPercent?: number;
   rerenderOnClick?: boolean;
@@ -17,10 +20,10 @@ export interface CircleProgressOptionsInterface {
   outerStrokeLinecap?: string;
   innerStrokeColor?: string;
   innerStrokeWidth?: number;
-  titleFormater?: Function;
+  titleFormat?: Function;
   titleColor?: string;
   titleFontSize?: string;
-  subtitleFormater?: Function;
+  subtitleFormat?: Function;
   subtitle?: string;
   subtitleColor?: string;
   subtitleFontSize?: string;
@@ -34,9 +37,12 @@ export interface CircleProgressOptionsInterface {
 }
 
 export class CircleProgressOptions implements CircleProgressOptionsInterface {
-  radius = 90;
-  space = 0;
+  class = '';
+  backgroundColor = 'transparent';
+  backgroundOpacity = 1;
   percent = 0;
+  radius = 90;
+  space = 4;
   toFixed = 0;
   maxPercent = 1000;
   rerenderOnClick = true;
@@ -44,14 +50,14 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
   unitsFontSize = '0.8em';
   unitsColor = 'rgb(68, 68, 68)';
   outerStrokeWidth = 8;
-  outerStrokeColor = "rgb(120, 192, 0)";
+  outerStrokeColor = 'rgb(120, 192, 0)';
   outerStrokeLinecap = 'round';
-  innerStrokeColor = "rgb(199, 229, 150)";
+  innerStrokeColor = 'rgb(199, 229, 150)';
   innerStrokeWidth = 4;
-  titleFormater = undefined;
+  titleFormat = undefined;
   titleColor = 'rgb(68, 68, 68)';
   titleFontSize = '2em';
-  subtitleFormater = undefined;
+  subtitleFormat = undefined;
   subtitle = 'progress';
   subtitleColor = 'darkgray';
   subtitleFontSize = '0.8em';
@@ -67,20 +73,26 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
 @Component({
   selector: 'circle-progress',
   template: `
-    <svg *ngIf="svg" [attr.height]="svg.height" [attr.width]="svg.width" (click)="emitClickEvent($event)" style="cursor:pointer;">
+    <svg xmlns="http://www.w3.org/2000/svg" *ngIf="svg" 
+      [attr.height]="svg.height" [attr.width]="svg.width" (click)="emitClickEvent($event)" [attr.class]="options.class">
+      <rect x="0" y="0" 
+        [attr.height]="svg.height" 
+        [attr.width]="svg.width" 
+        [attr.fill]="options.backgroundColor" 
+        [attr.fill-opacity]="options.backgroundOpacity"/>
       <path 
         [attr.d]="svg.path.d" 
         [attr.stroke]="svg.path.stroke" 
         [attr.stroke-width]="svg.path.strokeWidth" 
         [attr.stroke-linecap]="svg.path.strokeLinecap"
-        [attr.fill]="svg.path.fill"></path>
+        [attr.fill]="svg.path.fill"/>
       <circle *ngIf="svg.circle" 
         [attr.cx]="svg.circle.cx" 
         [attr.cy]="svg.circle.cy" 
         [attr.r]="svg.circle.r" 
         [attr.fill]="svg.circle.fill"
         [attr.stroke]="svg.circle.stroke" 
-        [attr.stroke-width]="svg.circle.strokeWidth"></circle>
+        [attr.stroke-width]="svg.circle.strokeWidth"/>
       <text *ngIf="options.showTitle" 
         [attr.text-anchor]="svg.title.textAnchor" 
         [attr.x]="svg.title.x" 
@@ -91,7 +103,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
         <tspan *ngIf="options.showUnits" 
           [attr.font-size]="svg.units.fontSize">{{svg.units.text}}</tspan>
       </text>
-      <text *ngIf="options.showSubtitle" 
+      <text *ngIf="options.showSubtitle"
         [attr.text-anchor]="svg.subtitle.textAnchor" 
         [attr.fill]="svg.subtitle.color" 
         [attr.x]="svg.subtitle.x"
@@ -104,6 +116,10 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
 export class CircleProgressComponent implements OnChanges {
 
   @Output() onClick: EventEmitter<any> = new EventEmitter();
+
+  @Input() class: string;
+  @Input() backgroundColor: string;
+  @Input() backgroundOpacity: number;
 
   @Input() radius: number;
   @Input() space: number;
@@ -123,11 +139,11 @@ export class CircleProgressComponent implements OnChanges {
   @Input() innerStrokeColor: string;
   @Input() innerStrokeWidth: string | number;
 
-  @Input() titleFormater: Function;
+  @Input() titleFormat: Function;
   @Input() titleColor: string;
   @Input() titleFontSize: string;
 
-  @Input() subtitleFormater: Function;
+  @Input() subtitleFormat: Function;
   @Input() subtitle: string;
   @Input() subtitleColor: string;
   @Input() subtitleFontSize: string;
@@ -141,17 +157,16 @@ export class CircleProgressComponent implements OnChanges {
   @Input() animateSubtitle: boolean;
   @Input() animationDuration: number;
 
+  private svg: any;
+  private options: CircleProgressOptions = new CircleProgressOptions();
   private _timerSubscription: Subscription;
 
   public isDrawing(): boolean {
     return (this._timerSubscription && !this._timerSubscription.closed) ? true : false;
   }
 
-  private svg: any;
-
-  private options: CircleProgressOptions = new CircleProgressOptions();
-
-  constructor(defaultOptions: CircleProgressOptions) {
+  constructor(
+    defaultOptions: CircleProgressOptions) {
     Object.assign(this.options, defaultOptions);
   }
 
@@ -161,14 +176,14 @@ export class CircleProgressComponent implements OnChanges {
 
   private applyOptions = () => {
     // the options of <circle-progress> may change already
-    for(let name of Object.keys(this.options)){
-      if(this.hasOwnProperty(name) && this[name] !== undefined){
+    for (let name of Object.keys(this.options)) {
+      if (this.hasOwnProperty(name) && this[name] !== undefined) {
         this.options[name] = this[name];
       }
     }
     // make sure key options valid
     this.options.radius = Math.abs(+this.options.radius);
-    this.options.radius < 50 && (this.options.radius = 50);
+    if (this.options.radius < 50) { this.options.radius = 50; }
     this.options.space = Math.abs(+this.options.space);
     this.options.percent = Math.abs(+this.options.percent);
     this.options.maxPercent = Math.abs(+this.options.maxPercent);
@@ -190,7 +205,7 @@ export class CircleProgressComponent implements OnChanges {
     let angleInRadius = angleInDegrees * Math.PI / 180;
     let x = centerX + Math.sin(angleInRadius) * radius;
     let y = centerY - Math.cos(angleInRadius) * radius;
-    return { x: x, y: y }
+    return { x: x, y: y };
   }
 
   draw = (percent: number) => {
@@ -201,23 +216,23 @@ export class CircleProgressComponent implements OnChanges {
     // determine box size
     let boxSize = this.options.radius * 2 + this.options.outerStrokeWidth * 2;
     // the centre of the circle
-    let centre = { x: boxSize / 2, y: boxSize / 2 }
+    let centre = { x: boxSize / 2, y: boxSize / 2 };
     // the start point of the arc
-    let startPoint = { x: centre.x, y: centre.y - this.options.radius }
-    // get the end point of the arc 
-    let endPoint = this.polarToCartesian(centre.x, centre.y, this.options.radius, 360 * circlePercent / 100)
+    let startPoint = { x: centre.x, y: centre.y - this.options.radius };
+    // get the end point of the arc
+    let endPoint = this.polarToCartesian(centre.x, centre.y, this.options.radius, 360 * circlePercent / 100);
     // We'll get an end point with the same [x, y] as the start point when percent is 100%, so move x slightly.
-    circlePercent == 100 && (endPoint.x = endPoint.x - 0.01)
+    if (circlePercent === 100) { endPoint.x = endPoint.x - 0.01; }
     // largeArcFlag and sweepFlag
     let largeArcFlag, sweepFlag;
     if (circlePercent > 50) {
-      [largeArcFlag, sweepFlag] = [1, 1]
+      [largeArcFlag, sweepFlag] = [1, 1];
     } else {
-      [largeArcFlag, sweepFlag] = [0, 1]
+      [largeArcFlag, sweepFlag] = [0, 1];
     }
-    // percent may not equal the actual percent 
+    // percent may not equal the actual percent
     let titlePercent = this.options.animateTitle ? percent : this.options.percent;
-    let titleTextPercent = titlePercent > this.options.maxPercent ? 
+    let titleTextPercent = titlePercent > this.options.maxPercent ?
       `${this.options.maxPercent.toFixed(this.options.toFixed)}+` : titlePercent.toFixed(this.options.toFixed);
     let subtitlePercent = this.options.animateSubtitle ? percent : this.options.percent;
     // assemble all
@@ -226,16 +241,17 @@ export class CircleProgressComponent implements OnChanges {
       height: boxSize,
       path: {
         // A rx ry x-axis-rotation large-arc-flag sweep-flag x y (https://developer.mozilla.org/en/docs/Web/SVG/Tutorial/Paths#Arcs)
-        d: `M ${startPoint.x} ${startPoint.y} A ${this.options.radius} ${this.options.radius} 0 ${largeArcFlag} ${sweepFlag} ${endPoint.x} ${endPoint.y}`,
+        d: `M ${startPoint.x} ${startPoint.y} 
+        A ${this.options.radius} ${this.options.radius} 0 ${largeArcFlag} ${sweepFlag} ${endPoint.x} ${endPoint.y}`,
         stroke: this.options.outerStrokeColor,
         strokeWidth: this.options.outerStrokeWidth,
         strokeLinecap: this.options.outerStrokeLinecap,
-        fill: "none"
+        fill: 'none'
       },
       circle: {
         cx: centre.x,
         cy: centre.y,
-        r: this.options.radius - this.options.space - this.options.outerStrokeWidth/2 - this.options.innerStrokeWidth/2,
+        r: this.options.radius - this.options.space - this.options.outerStrokeWidth / 2 - this.options.innerStrokeWidth / 2,
         fill: 'none',
         stroke: this.options.innerStrokeColor,
         strokeWidth: this.options.innerStrokeWidth,
@@ -245,8 +261,8 @@ export class CircleProgressComponent implements OnChanges {
         y: centre.y,
         textAnchor: 'middle',
         text:
-        (this.options.titleFormater != undefined && this.options.titleFormater.constructor.name === 'Function')
-          ? this.options.titleFormater(titlePercent) : titleTextPercent,
+        (this.options.titleFormat !== undefined && this.options.titleFormat.constructor.name === 'Function')
+          ? this.options.titleFormat(titlePercent) : titleTextPercent,
         color: this.options.titleColor,
         fontSize: this.options.titleFontSize,
       },
@@ -260,21 +276,16 @@ export class CircleProgressComponent implements OnChanges {
         y: centre.y + 15,
         textAnchor: 'middle',
         text:
-        (this.options.subtitleFormater != undefined && this.options.subtitleFormater.constructor.name === 'Function')
-          ? this.options.subtitleFormater(subtitlePercent) : this.options.subtitle,
+        (this.options.subtitleFormat !== undefined && this.options.subtitleFormat.constructor.name === 'Function')
+          ? this.options.subtitleFormat(subtitlePercent) : this.options.subtitle,
         color: this.options.subtitleColor,
         fontSize: this.options.subtitleFontSize
       },
-    }
-
+    };
   }
 
   private min = (a, b) => {
     return a < b ? a : b;
-  }
-
-  private max = (a, b) => {
-    return a > b ? a : b;
   }
 
   getAninationParameters = () => {
@@ -307,15 +318,15 @@ export class CircleProgressComponent implements OnChanges {
       }
     }
     // step must be greater than 0.
-    step < 1 && (step = 1);
-    return { times: times, step: step, interval: interval }
+    if (step < 1) { step = 1; }
+    return { times: times, step: step, interval: interval };
   }
 
   animate = () => {
     if (this._timerSubscription && !this._timerSubscription.closed) {
       this._timerSubscription.unsubscribe();
     }
-    let { times, step, interval } = this.getAninationParameters();
+    let { step: step, interval: interval } = this.getAninationParameters();
     let count = 0;
     this._timerSubscription = Observable.timer(0, interval).subscribe(() => {
       count += step;
@@ -334,7 +345,7 @@ export class CircleProgressComponent implements OnChanges {
   }
 
   emitClickEvent = (event) => {
-    this.options.rerenderOnClick && this.animate();
+    if (this.options.rerenderOnClick) { this.animate(); }
     this.onClick.emit(event);
   }
 
