@@ -157,8 +157,8 @@ export class CircleProgressComponent implements OnChanges {
   @Input() animateSubtitle: boolean;
   @Input() animationDuration: number;
 
-  private svg: any;
-  private options: CircleProgressOptions = new CircleProgressOptions();
+  svg: any;
+  options: CircleProgressOptions = new CircleProgressOptions();
   private _timerSubscription: Subscription;
 
   public isDrawing(): boolean {
