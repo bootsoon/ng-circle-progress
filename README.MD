@@ -1,6 +1,10 @@
 # ng-circle-progress
 
-![demo](https://raw.githubusercontent.com/bootsoon/ng-circle-progress/master/demo.png)
+## Demo
+
+[Try out the demo!](https://bootsoon.github.io/ng-circle-progress/)
+
+[![demo](https://raw.githubusercontent.com/bootsoon/ng-circle-progress/master/demo.png)](https://bootsoon.github.io/ng-circle-progress/)
 
 ## About
 
