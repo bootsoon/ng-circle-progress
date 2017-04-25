@@ -38,7 +38,15 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     NgCircleProgressModule.forRoot({
       // set defaults here
       radius: 100,
+      space: 4,
+      outerStrokeWidth: 16,
+      innerStrokeWidth: 8,
+      animationDuration: 300,
+      outerStrokeColor: "rgb(120, 192, 0)",
+      innerStrokeColor: "rgb(199, 229, 150)",
+      ...
     })
+    
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -46,13 +54,10 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
 export class AppModule { }
 ```
 
-Once your library is imported, you can use CircleProgressComponent in your Angular application:
+Once NgCircleProgressModule is imported, you can use CircleProgressComponent in your Angular application:
 
 ```xml
-<!-- You can now use your library component in app.component.html -->
-<h1>
-  {{title}}
-</h1>
+<!-- You can now use it in app.component.html -->
 <circle-progress 
   [percent]="85" 
   [radius]="100" 
@@ -68,7 +73,7 @@ Once your library is imported, you can use CircleProgressComponent in your Angul
 
 Option | Type | Default | Description | Example
 --- | --- | --- | --- | ---
-class | `string` | `''` | CSS class name for SVG element | `[class]=""`
+class | `string` | `''` | CSS class name for SVG element | `[class]="cursor-pointer"`
 backgroundColor | `string` | `'transparent'` | Background color | `[backgroundColor]="'white'"`
 backgroundOpacity | `number` | `1` | Opacity of background color | `[backgroundOpacity]="0.8"`
 percent | `number` | `0` | Number of percent you want to show | `[percent]="20"`
