@@ -11,7 +11,7 @@ export interface CircleProgressOptionsInterface {
   space?: number;
   toFixed?: number;
   maxPercent?: number;
-  rerenderOnClick?: boolean;
+  renderOnClick?: boolean;
   units?: string;
   unitsFontSize?: string;
   unitsColor?: string;
@@ -45,7 +45,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
   space = 4;
   toFixed = 0;
   maxPercent = 1000;
-  rerenderOnClick = true;
+  renderOnClick = true;
   units = '%';
   unitsFontSize = '0.8em';
   unitsColor = 'rgb(68, 68, 68)';
@@ -126,7 +126,7 @@ export class CircleProgressComponent implements OnChanges {
   @Input() percent: number;
   @Input() toFixed: number;
   @Input() maxPercent: number;
-  @Input() rerenderOnClick: boolean;
+  @Input() renderOnClick: boolean;
 
   @Input() units: string;
   @Input() unitsFontSize: string;
@@ -209,7 +209,7 @@ export class CircleProgressComponent implements OnChanges {
   }
 
   draw = (percent: number) => {
-    // make percent resonable
+    // make percent reasonable
     percent = (percent === undefined) ? this.options.percent : Math.abs(percent);
     // circle percent shouldn't be greater than 100%.
     let circlePercent = (percent > 100) ? 100 : percent;
@@ -288,16 +288,16 @@ export class CircleProgressComponent implements OnChanges {
     return a < b ? a : b;
   }
 
-  getAninationParameters = () => {
+  getAnimationParameters = () => {
     const MIN_INTERVAL = 10;
     let times, step, interval;
     if (this.options.percent >= 100) {
-      // we will finish anination in 100 times
+      // we will finish animation in 100 times
       times = 100;
       if (!this.options.animateTitle && !this.options.animateSubtitle) {
         step = 1;
       } else {
-        // show title or subtitle animation even if the arc is full, we also need to finishe it in 100 times.
+        // show title or subtitle animation even if the arc is full, we also need to finish it in 100 times.
         step = Math.round(this.min(this.options.percent, this.options.maxPercent) / times);
       }
     } else {
@@ -326,7 +326,7 @@ export class CircleProgressComponent implements OnChanges {
     if (this._timerSubscription && !this._timerSubscription.closed) {
       this._timerSubscription.unsubscribe();
     }
-    let { step: step, interval: interval } = this.getAninationParameters();
+    let { step: step, interval: interval } = this.getAnimationParameters();
     let count = 0;
     this._timerSubscription = Observable.timer(0, interval).subscribe(() => {
       count += step;
@@ -345,7 +345,7 @@ export class CircleProgressComponent implements OnChanges {
   }
 
   emitClickEvent = (event) => {
-    if (this.options.rerenderOnClick) { this.animate(); }
+    if (this.options.renderOnClick) { this.animate(); }
     this.onClick.emit(event);
   }
 

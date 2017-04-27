@@ -1,6 +1,7 @@
 {
   "name": "ng-circle-progress",
-  "version": "0.9.2",
+  "version": "0.9.4",
+  "description": "A simple circle progress component created for Angular 4 based only on SVG graphics",
   "repository": {
     "type": "git",
     "url": "https://github.com/bootsoon/ng-circle-progress"
@@ -22,7 +23,7 @@
   "module": "ng-circle-progress.js",
   "typings": "ng-circle-progress.d.ts",
   "peerDependencies": {
-    "@angular/core": "^2.0.0",
+    "@angular/core": "^4.0.0",
     "rxjs": "^5.1.0",
     "zone.js": "^0.8.4"
   }

@@ -8,7 +8,7 @@
 
 ## About
 
-It is a simple circle progress component created for Angular(>2) based only on SVG grahphics and has vavrious of options to customize it. 
+It is a simple circle progress component created for Angular 4 based only on SVG graphics and has various of options to customize it. 
 
 ## Installation
 
@@ -85,7 +85,7 @@ radius | `number` | `90` | Radius od circle | `[radius]="90"`
 space | `number` | `4` | Space between outer circle and inner circle | `[space]="0"`
 toFixed | `number` | `0` | Using fixed digital notation in Title | `[toFixed]="2"`
 maxPercent | `number` | `1000` | Max number of percent you want to show | `[maxPercent]="2000"`
-rerenderOnClick | `boolean` | `true` | Rerender when component is clicked | `[rerenderOnClick]="false"`
+renderOnClick | `boolean` | `true` | Render when component is clicked | `[renderOnClick]="false"`
 units | `string` | `'%'` | Units showed aside the title | `[units]="'percent'"`
 unitsFontSize | `string` | `'0.8em'` | Font size of units | `[unitsFontSize]="'10px'"`
 unitsColor | `string` | `'rgb(68, 68, 68)'` | Font color of units | `[unitsColor]="'darkgray'"`
@@ -106,7 +106,7 @@ showSubtitle | `boolean` | `true` | Whether to display subtitle | `[showSubtitle
 showUnits | `boolean` | `true` | Whether to display units | `[showUnits]="false"`
 animation | `boolean` | `true` | Whether to animate the outer circle when rendering  | `[animation]="false"`
 animateTitle | `boolean` | `true` | Whether to animate the title when rendering  | `[animateTitle]="false"`
-animateSubitle | `boolean` | `false` | Whether to animate the subtitle when rendering  | `[animateSubtitle]="true"`
+animateSubtitle | `boolean` | `false` | Whether to animate the subtitle when rendering  | `[animateSubtitle]="true"`
 animationDuration | `number` | `500` | Duration of animation in microseconds | `[animationDuration]="1000"`
 
 
