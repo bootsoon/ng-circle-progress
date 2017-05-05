@@ -42,12 +42,11 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     NgCircleProgressModule.forRoot({
       // set defaults here
       radius: 100,
-      space: 4,
       outerStrokeWidth: 16,
       innerStrokeWidth: 8,
+      outerStrokeColor: "#78C000",
+      innerStrokeColor: "#C7E596",
       animationDuration: 300,
-      outerStrokeColor: "rgb(120, 192, 0)",
-      innerStrokeColor: "rgb(199, 229, 150)",
       ...
     })
     
@@ -65,49 +64,56 @@ Once NgCircleProgressModule is imported, you can use CircleProgressComponent in 
 <circle-progress 
   [percent]="85" 
   [radius]="100" 
-  [outerStrokeColor]="rgb(120, 192, 0)"
-  [innerStrokeColor]="rgb(199, 229, 150)"
+  [outerStrokeWidth]="16",
+  [innerStrokeWidth]="8",
+  [outerStrokeColor]="#78C000"
+  [innerStrokeColor]="#C7E596"
   [animation]="true"
-  [animationDuration]="500"
+  [animationDuration]="300"
   ></circle-progress>
 
 ```
 
 ## Options
 
-Option | Type | Default | Description | Example
+Option | Type | Default | Description
 --- | --- | --- | --- | ---
-class | `string` | `''` | CSS class name for SVG element | `[class]="cursor-pointer"`
-backgroundColor | `string` | `'transparent'` | Background color | `[backgroundColor]="'white'"`
-backgroundOpacity | `number` | `1` | Opacity of background color | `[backgroundOpacity]="0.8"`
-percent | `number` | `0` | Number of percent you want to show | `[percent]="20"`
-radius | `number` | `90` | Radius od circle | `[radius]="90"`
-space | `number` | `4` | Space between outer circle and inner circle | `[space]="0"`
-toFixed | `number` | `0` | Using fixed digital notation in Title | `[toFixed]="2"`
-maxPercent | `number` | `1000` | Max number of percent you want to show | `[maxPercent]="2000"`
-renderOnClick | `boolean` | `true` | Render when component is clicked | `[renderOnClick]="false"`
-units | `string` | `'%'` | Units showed aside the title | `[units]="'percent'"`
-unitsFontSize | `string` | `'0.8em'` | Font size of units | `[unitsFontSize]="'10px'"`
-unitsColor | `string` | `'rgb(68, 68, 68)'` | Font color of units | `[unitsColor]="'darkgray'"`
-outerStrokeWidth | `number` | `8` | Stroke width of outer circle (progress circle) | `[outerStrokeWidth]="16"`
-outerStrokeColor | `sting` | `'rgb(120, 192, 0)'` | Stroke color of outer circle | `[outerStrokeColor]="'lightgreen'"`
-outerStrokeLinecap | `sting` | `'round'` | Stroke linecap of outer circle. Possible values(butt, round, square, inherit) | `[outerStrokeLinecap]="'square'"`
-innerStrokeWidth | `number` | `4` | Stroke width of inner circle | `[innerStrokeWidth]="8"`
-innerStrokeColor | `sting` | `'rgb(120, 192, 0)'` | Stroke color of inner circle | `[outerStrokeColor]="'gray'"`
-titleFormat | `Function` | `undefined` | a callback function to format title | `[titleFormat]="formatTitle"`
-titleColor | `string` | `'rgb(68, 68, 68)'` | Font color of title | `[titleColor]="'darkgray'"`
-titleFontSize | `string` | `'2em'` | Font size of title | `[titleFontSize]="'18px'"`
-subtitle | `string` | `'Percent'` | text showed as subtitle | `[subtitle]="'Well done!'"`
-subtitleFormat | `Function` | `undefined` | a callback function to format subtitle | `[subtitleFormat]="formatSubtitle"`
-subtitleColor | `string` | `'darkgray'` | Font color of subtitle | `[titleColor]="'darkgray'"`
-subtitleFontSize | `string` | `'0.8em'` | Font size of subtitle | `[titleFontSize]="'18px'"`
-showTitle | `boolean` | `true` | Whether to display title | `[showTitle]="false"`
-showSubtitle | `boolean` | `true` | Whether to display subtitle | `[showSubtitle]="false"`
-showUnits | `boolean` | `true` | Whether to display units | `[showUnits]="false"`
-animation | `boolean` | `true` | Whether to animate the outer circle when rendering  | `[animation]="false"`
-animateTitle | `boolean` | `true` | Whether to animate the title when rendering  | `[animateTitle]="false"`
-animateSubtitle | `boolean` | `false` | Whether to animate the subtitle when rendering  | `[animateSubtitle]="true"`
-animationDuration | `number` | `500` | Duration of animation in microseconds | `[animationDuration]="1000"`
+percent | `number` | `0` | Number of percent you want to show
+maxPercent | `number` | `1000` | Max number of percent you want to show
+radius | `number` | `90` | Radius od circle
+showTitle | `boolean` | `true` | Whether to display title
+showSubtitle | `boolean` | `true` | Whether to display subtitle
+showUnits | `boolean` | `true` | Whether to display units
+showBackground | `boolean` | `true` | Whether to display background circle
+showInnerStroke | `boolean` | `true` | Whether to display inner stroke
+backgroundStroke | `string` | `'transparent'` | Background stroke color
+backgroundStrokeWidth | `number` | `0` | Stroke width of background circle
+backgroundPadding | `number` | `5` | Padding of background circle
+backgroundColor | `string` | `'transparent'` | Background color
+backgroundOpacity | `number` | `1` | Opacity of background color
+space | `number` | `4` | Space between outer circle and inner circle
+toFixed | `number` | `0` | Using fixed digital notation in Title
+renderOnClick | `boolean` | `true` | Render when component is clicked
+units | `string` | `'%'` | Units showed aside the title
+unitsFontSize | `string` | `'10'` | Font size of units
+unitsColor | `string` | `'#444444'` | Font color of units
+outerStrokeWidth | `number` | `8` | Stroke width of outer circle (progress circle)
+outerStrokeColor | `sting` | `'#78C000'` | Stroke color of outer circle
+outerStrokeLinecap | `sting` | `'round'` | Stroke linecap of outer circle. Possible values(butt, round, square, inherit)
+innerStrokeWidth | `number` | `4` | Stroke width of inner circle
+innerStrokeColor | `sting` | `'#C7E596'` | Stroke color of inner circle
+titleFormat | `Function` | `undefined` | a callback function to format title
+titleColor | `string` | `'#444444'` | Font color of title
+titleFontSize | `string` | `'20'` | Font size of title
+subtitle | `string` | `'Percent'` | text showed as subtitle
+subtitleFormat | `Function` | `undefined` | a callback function to format subtitle
+subtitleColor | `string` | `'#A9A9A9'` | Font color of subtitle
+subtitleFontSize | `string` | `'10'` | Font size of subtitle
+animation | `boolean` | `true` | Whether to animate the outer circle when rendering
+animateTitle | `boolean` | `true` | Whether to animate the title when rendering
+animateSubtitle | `boolean` | `false` | Whether to animate the subtitle when rendering
+animationDuration | `number` | `500` | Duration of animation in microseconds
+class | `string` | `''` | CSS class name for SVG element
 
 
 ```typescript
@@ -144,5 +150,5 @@ $ npm run lint
 
 MIT © [bootsoon](mailto:bootsoon@aliyun.com)
 
-This project is generated by [Yeoman generator angular2-library](https://github.com/jvandemo/generator-angular2-library)
+This project was generated by [Yeoman generator angular2-library](https://github.com/jvandemo/generator-angular2-library)
 
