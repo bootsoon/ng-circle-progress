@@ -77,7 +77,7 @@ Once NgCircleProgressModule is imported, you can use CircleProgressComponent in 
 ## Options
 
 Option | Type | Default | Description
---- | --- | --- | --- | ---
+--- | --- | --- | ---
 percent | `number` | `0` | Number of percent you want to show
 maxPercent | `number` | `1000` | Max number of percent you want to show
 radius | `number` | `90` | Radius od circle
@@ -114,6 +114,7 @@ animateTitle | `boolean` | `true` | Whether to animate the title when rendering
 animateSubtitle | `boolean` | `false` | Whether to animate the subtitle when rendering
 animationDuration | `number` | `500` | Duration of animation in microseconds
 class | `string` | `''` | CSS class name for SVG element
+
 
 ```typescript
 // subtitleFormat callback example
