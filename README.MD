@@ -115,7 +115,6 @@ animateSubtitle | `boolean` | `false` | Whether to animate the subtitle when ren
 animationDuration | `number` | `500` | Duration of animation in microseconds
 class | `string` | `''` | CSS class name for SVG element
 
-
 ```typescript
 // subtitleFormat callback example
 formatSubtitle = (percent: number) : string => {
