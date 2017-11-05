@@ -24,6 +24,7 @@ export interface CircleProgressOptionsInterface {
   innerStrokeColor?: string;
   innerStrokeWidth?: number;
   titleFormat?: Function;
+  title?: string;
   titleColor?: string;
   titleFontSize?: string;
   subtitleFormat?: Function;
@@ -63,6 +64,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
   innerStrokeColor = '#C7E596';
   innerStrokeWidth = 4;
   titleFormat = undefined;
+  title = 'auto';
   titleColor = '#444444';
   titleFontSize = '20';
   subtitleFormat = undefined;
@@ -157,6 +159,7 @@ export class CircleProgressComponent implements OnChanges {
   @Input() innerStrokeWidth: string | number;
 
   @Input() titleFormat: Function;
+  @Input() title: string;
   @Input() titleColor: string;
   @Input() titleFontSize: string;
 
@@ -302,7 +305,7 @@ export class CircleProgressComponent implements OnChanges {
         textAnchor: 'middle',
         text:
         (this.options.titleFormat !== undefined && this.options.titleFormat.constructor.name === 'Function')
-          ? this.options.titleFormat(titlePercent) : titleTextPercent,
+          ? this.options.titleFormat(titlePercent) : (this.options.title === 'auto' ? titleTextPercent : this.options.title),
         color: this.options.titleColor,
         fontSize: this.options.titleFontSize,
       },
