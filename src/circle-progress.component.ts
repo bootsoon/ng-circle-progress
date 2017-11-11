@@ -40,6 +40,7 @@ export interface CircleProgressOptionsInterface {
   showUnits?: boolean;
   showBackground?: boolean;
   showInnerStroke?: boolean;
+  clockwise?: boolean;
 }
 
 export class CircleProgressOptions implements CircleProgressOptionsInterface {
@@ -80,6 +81,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
   showUnits = true;
   showBackground = true;
   showInnerStroke = true;
+  clockwise = true;
 }
 
 @Component({
@@ -95,12 +97,6 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
         [attr.fill-opacity]="svg.backgroundCircle.fillOpacity"
         [attr.stroke]="svg.backgroundCircle.stroke" 
         [attr.stroke-width]="svg.backgroundCircle.strokeWidth"/>
-      <path 
-        [attr.d]="svg.path.d" 
-        [attr.stroke]="svg.path.stroke" 
-        [attr.stroke-width]="svg.path.strokeWidth" 
-        [attr.stroke-linecap]="svg.path.strokeLinecap"
-        [attr.fill]="svg.path.fill"/>
       <circle *ngIf="options.showInnerStroke" 
         [attr.cx]="svg.circle.cx" 
         [attr.cy]="svg.circle.cy" 
@@ -108,6 +104,12 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
         [attr.fill]="svg.circle.fill"
         [attr.stroke]="svg.circle.stroke" 
         [attr.stroke-width]="svg.circle.strokeWidth"/>
+      <path 
+        [attr.d]="svg.path.d" 
+        [attr.stroke]="svg.path.stroke" 
+        [attr.stroke-width]="svg.path.strokeWidth" 
+        [attr.stroke-linecap]="svg.path.strokeLinecap"
+        [attr.fill]="svg.path.fill"/>
       <text *ngIf="options.showTitle" 
         [attr.text-anchor]="svg.title.textAnchor" 
         [attr.x]="svg.title.x" 
@@ -178,6 +180,7 @@ export class CircleProgressComponent implements OnChanges {
   @Input() showUnits: boolean;
   @Input() showBackground: boolean;
   @Input() showInnerStroke: boolean;
+  @Input() clockwise: boolean;
 
   @Input('options') templateOptions: CircleProgressOptions;
 
@@ -214,7 +217,7 @@ export class CircleProgressComponent implements OnChanges {
     // make sure key options valid
     this.options.radius = Math.abs(+this.options.radius);
     if (this.options.radius < 50) { this.options.radius = 50; }
-    this.options.space = Math.abs(+this.options.space);
+    this.options.space = +this.options.space;
     this.options.percent = Math.abs(+this.options.percent);
     this.options.maxPercent = Math.abs(+this.options.maxPercent);
     this.options.animationDuration = Math.abs(this.options.animationDuration);
@@ -254,15 +257,17 @@ export class CircleProgressComponent implements OnChanges {
     // the start point of the arc
     let startPoint = { x: centre.x, y: centre.y - this.options.radius };
     // get the end point of the arc
-    let endPoint = this.polarToCartesian(centre.x, centre.y, this.options.radius, 360 * circlePercent / 100);
+    let endPoint = this.polarToCartesian(centre.x, centre.y, this.options.radius, 360 * (this.options.clockwise ? circlePercent : (100 - circlePercent)) / 100);  // ####################
     // We'll get an end point with the same [x, y] as the start point when percent is 100%, so move x slightly.
-    if (circlePercent === 100) { endPoint.x = endPoint.x - 0.01; }
+    if (circlePercent === 100) { 
+      endPoint.x = endPoint.x + (this.options.clockwise ? -0.01 : +0.01);
+    }
     // largeArcFlag and sweepFlag
     let largeArcFlag, sweepFlag;
     if (circlePercent > 50) {
-      [largeArcFlag, sweepFlag] = [1, 1];
+      [largeArcFlag, sweepFlag] = this.options.clockwise ? [1, 1] : [1, 0];
     } else {
-      [largeArcFlag, sweepFlag] = [0, 1];
+      [largeArcFlag, sweepFlag] = this.options.clockwise ? [0, 1] : [0, 0];
     }
     // percent may not equal the actual percent
     let titlePercent = this.options.animateTitle ? percent : this.options.percent;
