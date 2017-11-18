@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable ';
 
 export interface CircleProgressOptionsInterface {
   class?: string;
