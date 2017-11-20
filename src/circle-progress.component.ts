@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable ';
+import { Observable } from 'rxjs/Rx';
 
 export interface CircleProgressOptionsInterface {
   class?: string;
@@ -216,7 +216,6 @@ export class CircleProgressComponent implements OnChanges {
     }
     // make sure key options valid
     this.options.radius = Math.abs(+this.options.radius);
-    if (this.options.radius < 50) { this.options.radius = 50; }
     this.options.space = +this.options.space;
     this.options.percent = Math.abs(+this.options.percent);
     this.options.maxPercent = Math.abs(+this.options.maxPercent);
@@ -258,7 +257,7 @@ export class CircleProgressComponent implements OnChanges {
     let startPoint = { x: centre.x, y: centre.y - this.options.radius };
     // get the end point of the arc
     let endPoint = this.polarToCartesian(centre.x, centre.y, this.options.radius, 360 * (this.options.clockwise ? circlePercent : (100 - circlePercent)) / 100);  // ####################
-    // We'll get an end point with the same [x, y] as the start point when percent is 100%, so move x slightly.
+    // We'll get an end point with the same [x, y] as the start point when percent is 100%, so move x a little bit.
     if (circlePercent === 100) { 
       endPoint.x = endPoint.x + (this.options.clockwise ? -0.01 : +0.01);
     }
