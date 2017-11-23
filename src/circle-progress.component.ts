@@ -137,10 +137,11 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
         <tspan [attr.font-size]="svg.subtitle.fontSize">{{svg.subtitle.text}}</tspan>
       </text>
       <image *ngIf="options.showImage"
-        [height]="{{svg.image.height}}"
-        [width]="{{svg.image.width}}"
-        [href]="{{svg.image.src}}"
-        preserveAspectRatio="true"
+        [attr.height]="svg.image.height"
+        [attr.width]="svg.image.width"
+        [attr.href]="svg.image.src"
+        [attr.x]="svg.image.x"
+        [attr.y]="svg.image.y"
       />
     </svg>
   `
@@ -348,6 +349,8 @@ export class CircleProgressComponent implements OnChanges {
         fontSize: this.options.subtitleFontSize
       },
       image: {
+        x: centre.x - this.options.imageWidth / 2,
+        y: centre.y - this.options.imageHeight / 2,
         src: this.options.imageSrc,
         width: this.options.imageWidth,
         height: this.options.imageHeight,
