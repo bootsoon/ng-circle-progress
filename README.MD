@@ -8,7 +8,7 @@
 
 ## About
 
-It is a simple circle progress component created for Angular 4 based only on SVG graphics and has various of options to customize it. 
+It is a simple circle progress component created for Angular 4 based only on SVG graphics and has various of options to customize it.
 
 ## Installation
 
@@ -49,7 +49,7 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
       animationDuration: 300,
       ...
     })
-    
+
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -61,16 +61,16 @@ Once NgCircleProgressModule is imported, you can use CircleProgressComponent in 
 
 ```xml
 <!-- You can now use it in app.component.html -->
-<circle-progress 
-  [percent]="85" 
-  [radius]="100" 
-  [outerStrokeWidth]="16",
-  [innerStrokeWidth]="8",
+<circle-progress
+  [percent]="85"
+  [radius]="100"
+  [outerStrokeWidth]="16"
+  [innerStrokeWidth]="8"
   [outerStrokeColor]="#78C000"
   [innerStrokeColor]="#C7E596"
   [animation]="true"
   [animationDuration]="300"
-  ></circle-progress>
+></circle-progress>
 
 ```
 
