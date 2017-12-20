@@ -139,7 +139,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
       <image *ngIf="options.showImage"
         [attr.height]="svg.image.height"
         [attr.width]="svg.image.width"
-        [attr.href]="svg.image.src"
+        [attr.xlink:href]="svg.image.src"
         [attr.x]="svg.image.x"
         [attr.y]="svg.image.y"
       />
