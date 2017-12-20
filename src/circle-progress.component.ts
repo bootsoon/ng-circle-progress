@@ -27,6 +27,9 @@ export interface CircleProgressOptionsInterface {
   title?: string;
   titleColor?: string;
   titleFontSize?: string;
+  imageSrc?: string;
+  imageHeight?: number;
+  imageWidth?: number;
   subtitleFormat?: Function;
   subtitle?: string;
   subtitleColor?: string;
@@ -38,6 +41,7 @@ export interface CircleProgressOptionsInterface {
   showTitle?: boolean;
   showSubtitle?: boolean;
   showUnits?: boolean;
+  showImage?: boolean;
   showBackground?: boolean;
   showInnerStroke?: boolean;
   clockwise?: boolean;
@@ -68,6 +72,9 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
   title = 'auto';
   titleColor = '#444444';
   titleFontSize = '20';
+  imageSrc = undefined;
+  imageHeight = undefined;
+  imageWidth = undefined;
   subtitleFormat = undefined;
   subtitle = 'progress';
   subtitleColor = '#A9A9A9';
@@ -79,6 +86,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
   showTitle = true;
   showSubtitle = true;
   showUnits = true;
+  showImage = false;
   showBackground = true;
   showInnerStroke = true;
   clockwise = true;
@@ -87,48 +95,55 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
 @Component({
   selector: 'circle-progress',
   template: `
-    <svg xmlns="http://www.w3.org/2000/svg" *ngIf="svg" 
+    <svg xmlns="http://www.w3.org/2000/svg" *ngIf="svg"
       [attr.height]="svg.height" [attr.width]="svg.width" (click)="emitClickEvent($event)" [attr.class]="options.class">
-      <circle *ngIf="options.showBackground" 
-        [attr.cx]="svg.backgroundCircle.cx" 
-        [attr.cy]="svg.backgroundCircle.cy" 
-        [attr.r]="svg.backgroundCircle.r" 
+      <circle *ngIf="options.showBackground"
+        [attr.cx]="svg.backgroundCircle.cx"
+        [attr.cy]="svg.backgroundCircle.cy"
+        [attr.r]="svg.backgroundCircle.r"
         [attr.fill]="svg.backgroundCircle.fill"
         [attr.fill-opacity]="svg.backgroundCircle.fillOpacity"
-        [attr.stroke]="svg.backgroundCircle.stroke" 
+        [attr.stroke]="svg.backgroundCircle.stroke"
         [attr.stroke-width]="svg.backgroundCircle.strokeWidth"/>
-      <circle *ngIf="options.showInnerStroke" 
-        [attr.cx]="svg.circle.cx" 
-        [attr.cy]="svg.circle.cy" 
-        [attr.r]="svg.circle.r" 
+      <circle *ngIf="options.showInnerStroke"
+        [attr.cx]="svg.circle.cx"
+        [attr.cy]="svg.circle.cy"
+        [attr.r]="svg.circle.r"
         [attr.fill]="svg.circle.fill"
-        [attr.stroke]="svg.circle.stroke" 
+        [attr.stroke]="svg.circle.stroke"
         [attr.stroke-width]="svg.circle.strokeWidth"/>
-      <path 
-        [attr.d]="svg.path.d" 
-        [attr.stroke]="svg.path.stroke" 
-        [attr.stroke-width]="svg.path.strokeWidth" 
+      <path
+        [attr.d]="svg.path.d"
+        [attr.stroke]="svg.path.stroke"
+        [attr.stroke-width]="svg.path.strokeWidth"
         [attr.stroke-linecap]="svg.path.strokeLinecap"
         [attr.fill]="svg.path.fill"/>
-      <text *ngIf="options.showTitle" 
-        [attr.text-anchor]="svg.title.textAnchor" 
-        [attr.x]="svg.title.x" 
+      <text *ngIf="options.showTitle && !options.showImage"
+        [attr.text-anchor]="svg.title.textAnchor"
+        [attr.x]="svg.title.x"
         [attr.y]="svg.title.y">
-        <tspan 
-          [attr.font-size]="svg.title.fontSize" 
+        <tspan
+          [attr.font-size]="svg.title.fontSize"
           [attr.fill]="svg.title.color">{{svg.title.text}}</tspan>
-        <tspan *ngIf="options.showUnits" 
+        <tspan *ngIf="options.showUnits"
           [attr.font-size]="svg.units.fontSize"
           [attr.fill]="svg.units.color">{{svg.units.text}}</tspan>
       </text>
-      <text *ngIf="options.showSubtitle"
-        [attr.text-anchor]="svg.subtitle.textAnchor" 
-        [attr.fill]="svg.subtitle.color" 
+      <text *ngIf="options.showSubtitle && !options.showImage"
+        [attr.text-anchor]="svg.subtitle.textAnchor"
+        [attr.fill]="svg.subtitle.color"
         [attr.x]="svg.subtitle.x"
         [attr.y]="svg.subtitle.y">
         <tspan [attr.font-size]="svg.subtitle.fontSize">{{svg.subtitle.text}}</tspan>
       </text>
-    </svg>  
+      <image *ngIf="options.showImage"
+        [attr.height]="svg.image.height"
+        [attr.width]="svg.image.width"
+        [attr.xlink:href]="svg.image.src"
+        [attr.x]="svg.image.x"
+        [attr.y]="svg.image.y"
+      />
+    </svg>
   `
 })
 export class CircleProgressComponent implements OnChanges {
@@ -165,6 +180,10 @@ export class CircleProgressComponent implements OnChanges {
   @Input() titleColor: string;
   @Input() titleFontSize: string;
 
+  @Input() imageSrc: string;
+  @Input() imageHeight: number;
+  @Input() imageWidth: number;
+
   @Input() subtitleFormat: Function;
   @Input() subtitle: string;
   @Input() subtitleColor: string;
@@ -178,6 +197,7 @@ export class CircleProgressComponent implements OnChanges {
   @Input() showTitle: boolean;
   @Input() showSubtitle: boolean;
   @Input() showUnits: boolean;
+  @Input() showImage: boolean;
   @Input() showBackground: boolean;
   @Input() showInnerStroke: boolean;
   @Input() clockwise: boolean;
@@ -185,7 +205,7 @@ export class CircleProgressComponent implements OnChanges {
   @Input('options') templateOptions: CircleProgressOptions;
 
   svg: any;
-  
+
   options: CircleProgressOptions = new CircleProgressOptions();
   defaultOptions: CircleProgressOptions = new CircleProgressOptions();
 
@@ -258,7 +278,7 @@ export class CircleProgressComponent implements OnChanges {
     // get the end point of the arc
     let endPoint = this.polarToCartesian(centre.x, centre.y, this.options.radius, 360 * (this.options.clockwise ? circlePercent : (100 - circlePercent)) / 100);  // ####################
     // We'll get an end point with the same [x, y] as the start point when percent is 100%, so move x a little bit.
-    if (circlePercent === 100) { 
+    if (circlePercent === 100) {
       endPoint.x = endPoint.x + (this.options.clockwise ? -0.01 : +0.01);
     }
     // largeArcFlag and sweepFlag
@@ -288,7 +308,7 @@ export class CircleProgressComponent implements OnChanges {
       },
       path: {
         // A rx ry x-axis-rotation large-arc-flag sweep-flag x y (https://developer.mozilla.org/en/docs/Web/SVG/Tutorial/Paths#Arcs)
-        d: `M ${startPoint.x} ${startPoint.y} 
+        d: `M ${startPoint.x} ${startPoint.y}
         A ${this.options.radius} ${this.options.radius} 0 ${largeArcFlag} ${sweepFlag} ${endPoint.x} ${endPoint.y}`,
         stroke: this.options.outerStrokeColor,
         strokeWidth: this.options.outerStrokeWidth,
@@ -327,6 +347,13 @@ export class CircleProgressComponent implements OnChanges {
           ? this.options.subtitleFormat(subtitlePercent) : this.options.subtitle,
         color: this.options.subtitleColor,
         fontSize: this.options.subtitleFontSize
+      },
+      image: {
+        x: centre.x - this.options.imageWidth / 2,
+        y: centre.y - this.options.imageHeight / 2,
+        src: this.options.imageSrc,
+        width: this.options.imageWidth,
+        height: this.options.imageHeight,
       },
     };
   }
