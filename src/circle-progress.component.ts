@@ -24,11 +24,11 @@ export interface CircleProgressOptionsInterface {
   innerStrokeColor?: string;
   innerStrokeWidth?: number;
   titleFormat?: Function;
-  title?: string;
+  title?: string|Array<String>;
   titleColor?: string;
   titleFontSize?: string;
   subtitleFormat?: Function;
-  subtitle?: string;
+  subtitle?: string|Array<String>;
   subtitleColor?: string;
   subtitleFontSize?: string;
   animation?: boolean;
@@ -65,11 +65,11 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
   innerStrokeColor = '#C7E596';
   innerStrokeWidth = 4;
   titleFormat = undefined;
-  title = 'auto';
+  title: string|Array<String> = 'auto';
   titleColor = '#444444';
   titleFontSize = '20';
   subtitleFormat = undefined;
-  subtitle = 'progress';
+  subtitle: string|Array<String> = 'progress';
   subtitleColor = '#A9A9A9';
   subtitleFontSize = '10';
   animation = true;
@@ -106,27 +106,34 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
         [attr.stroke-width]="svg.circle.strokeWidth"/>
       <path 
         [attr.d]="svg.path.d" 
-        [attr.stroke]="svg.path.stroke" 
+        [attr.stroke]="svg.path.stroke"
         [attr.stroke-width]="svg.path.strokeWidth" 
         [attr.stroke-linecap]="svg.path.strokeLinecap"
         [attr.fill]="svg.path.fill"/>
-      <text *ngIf="options.showTitle" 
-        [attr.text-anchor]="svg.title.textAnchor" 
-        [attr.x]="svg.title.x" 
-        [attr.y]="svg.title.y">
-        <tspan 
-          [attr.font-size]="svg.title.fontSize" 
-          [attr.fill]="svg.title.color">{{svg.title.text}}</tspan>
-        <tspan *ngIf="options.showUnits" 
+      <text *ngIf="options.showTitle || options.showUnits || options.showSubtitle" 
+        alignment-baseline="baseline"
+        [attr.x]="svg.circle.cx"
+        [attr.y]="svg.circle.cy"
+        [attr.text-anchor]="svg.title.textAnchor">
+        <ng-container *ngIf="options.showTitle">
+          <tspan *ngFor="let tspan of svg.title.tspans"
+            [attr.x]="svg.title.x"
+            [attr.y]="svg.title.y"
+            [attr.dy]="tspan.dy"
+            [attr.font-size]="svg.title.fontSize" 
+            [attr.fill]="svg.title.color">{{tspan.span}}</tspan>
+        </ng-container>
+        <tspan *ngIf="options.showUnits"
           [attr.font-size]="svg.units.fontSize"
           [attr.fill]="svg.units.color">{{svg.units.text}}</tspan>
-      </text>
-      <text *ngIf="options.showSubtitle"
-        [attr.text-anchor]="svg.subtitle.textAnchor" 
-        [attr.fill]="svg.subtitle.color" 
-        [attr.x]="svg.subtitle.x"
-        [attr.y]="svg.subtitle.y">
-        <tspan [attr.font-size]="svg.subtitle.fontSize">{{svg.subtitle.text}}</tspan>
+        <ng-container *ngIf="options.showSubtitle">
+          <tspan *ngFor="let tspan of svg.subtitle.tspans"
+            [attr.x]="svg.subtitle.x"
+            [attr.y]="svg.subtitle.y"
+            [attr.dy]="tspan.dy"
+            [attr.font-size]="svg.subtitle.fontSize"
+            [attr.fill]="svg.subtitle.color">{{tspan.span}}</tspan>
+        </ng-container>
       </text>
     </svg>  
   `
@@ -161,12 +168,12 @@ export class CircleProgressComponent implements OnChanges {
   @Input() innerStrokeWidth: string | number;
 
   @Input() titleFormat: Function;
-  @Input() title: string;
+  @Input() title: string|Array<String>;
   @Input() titleColor: string;
   @Input() titleFontSize: string;
 
   @Input() subtitleFormat: Function;
-  @Input() subtitle: string;
+  @Input() subtitle: string|string[];
   @Input() subtitleColor: string;
   @Input() subtitleFontSize: string;
 
@@ -273,7 +280,85 @@ export class CircleProgressComponent implements OnChanges {
     let titleTextPercent = titlePercent > this.options.maxPercent ?
       `${this.options.maxPercent.toFixed(this.options.toFixed)}+` : titlePercent.toFixed(this.options.toFixed);
     let subtitlePercent = this.options.animateSubtitle ? percent : this.options.percent;
-    // assemble all
+    // get title object
+    let title = {
+      x: centre.x,
+      y: centre.y,
+      textAnchor: 'middle',
+      color: this.options.titleColor,
+      fontSize: this.options.titleFontSize,
+      texts: [],
+      tspans: []
+    };
+    // from v0.9.9, both title and titleFormat(...) may be an array of string.
+    if(this.options.titleFormat !== undefined && this.options.titleFormat.constructor.name === 'Function'){
+      let formatted = this.options.titleFormat(titlePercent);
+      if(formatted instanceof Array){
+        title.texts = [...formatted];
+      }else{
+        title.texts.push(formatted.toString());
+      }
+    }else{
+      if(this.options.title === 'auto'){
+        title.texts.push(titleTextPercent);
+      }else{
+        if(this.options.title instanceof Array){
+          title.texts = [...this.options.title]
+        }else{
+          title.texts.push(this.options.title.toString());
+        }
+      }
+    }
+    // get subtitle object
+    let subtitle = {
+      x: centre.x,
+      y: centre.y,
+      textAnchor: 'middle',
+      color: this.options.subtitleColor,
+      fontSize: this.options.subtitleFontSize,
+      texts: [],
+      tspans: []
+    }
+    // from v0.9.9, both subtitle and subtitleFormat(...) may be an array of string.
+    if(this.options.subtitleFormat !== undefined && this.options.subtitleFormat.constructor.name === 'Function'){
+      let formatted = this.options.subtitleFormat(subtitlePercent);
+      if(formatted instanceof Array){
+        subtitle.texts = [...formatted];
+      }else{
+        subtitle.texts.push(formatted.toString());
+      }
+    }else{
+      if(this.options.subtitle instanceof Array){
+        subtitle.texts = [...this.options.subtitle]
+      }else{
+        subtitle.texts.push(this.options.subtitle.toString());
+      }
+    }
+    // get units object
+    let units = {
+      text: `${this.options.units}`,
+      fontSize: this.options.unitsFontSize,
+      color: this.options.unitsColor
+    }
+    // get total count of text lines to be shown
+    let rowCount = 0, rowNum = 1;
+    this.options.showTitle && (rowCount += title.texts.length);
+    this.options.showSubtitle && (rowCount += subtitle.texts.length);
+    // calc dy for each tspan for title
+    if(this.options.showTitle){
+      for(let span of title.texts){
+        title.tspans.push({span: span, dy: this.getRelativeY(rowNum, rowCount)});
+        rowNum++;
+      }
+    }
+    // calc dy for each tspan for subtitle
+    if(this.options.showSubtitle){
+      for(let span of subtitle.texts){
+        subtitle.tspans.push({span: span, dy: this.getRelativeY(rowNum, rowCount)})
+        rowNum++;
+      }
+    }
+    // Bring it all together
     this.svg = {
       width: boxSize,
       height: boxSize,
@@ -303,32 +388,16 @@ export class CircleProgressComponent implements OnChanges {
         stroke: this.options.innerStrokeColor,
         strokeWidth: this.options.innerStrokeWidth,
       },
-      title: {
-        x: centre.x,
-        y: centre.y,
-        textAnchor: 'middle',
-        text:
-        (this.options.titleFormat !== undefined && this.options.titleFormat.constructor.name === 'Function')
-          ? this.options.titleFormat(titlePercent) : (this.options.title === 'auto' ? titleTextPercent : this.options.title),
-        color: this.options.titleColor,
-        fontSize: this.options.titleFontSize,
-      },
-      units: {
-        text: `${this.options.units}`,
-        fontSize: this.options.unitsFontSize,
-        color: this.options.unitsColor
-      },
-      subtitle: {
-        x: centre.x,
-        y: centre.y + 15,
-        textAnchor: 'middle',
-        text:
-        (this.options.subtitleFormat !== undefined && this.options.subtitleFormat.constructor.name === 'Function')
-          ? this.options.subtitleFormat(subtitlePercent) : this.options.subtitle,
-        color: this.options.subtitleColor,
-        fontSize: this.options.subtitleFontSize
-      },
+      title: title,
+      units: units,
+      subtitle: subtitle,
     };
+  }
+
+  private getRelativeY = (rowNum: number, rowCount: number): string => {
+    // why '-0.18em'? It's a magic number when property 'alignment-baseline' equals 'baseline'. :)
+    let initialOffset = -0.18, offset = 1;
+    return (initialOffset + offset * (rowNum-rowCount/2)).toFixed(2) + 'em';
   }
 
   private min = (a, b) => {
