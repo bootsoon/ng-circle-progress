@@ -104,11 +104,11 @@ outerStrokeColor | `sting` | `'#78C000'` | Stroke color of outer circle
 outerStrokeLinecap | `sting` | `'round'` | Stroke linecap of outer circle. Possible values(butt, round, square, inherit)
 innerStrokeWidth | `number` | `4` | Stroke width of inner circle
 innerStrokeColor | `sting` | `'#C7E596'` | Stroke color of inner circle
-title | `string|Array<String>` | `'auto'` | text showed as title. Percentage is displayed when title equals 'auto'.
+title | `string\|Array<String>` | `'auto'` | text showed as title. Percentage is displayed when title equals 'auto'.
 titleFormat | `Function` | `undefined` | A callback function to format title. It returns a string or an array of string.
 titleColor | `string` | `'#444444'` | Font color of title
 titleFontSize | `string` | `'20'` | Font size of title
-subtitle | `string|Array<String>` | `'Percent'` | text showed as subtitle
+subtitle | `string\|Array<String>` | `'Percent'` | text showed as subtitle
 subtitleFormat | `Function` | `undefined` | A callback function to format subtitle. It returns a string or an array of string.
 subtitleColor | `string` | `'#A9A9A9'` | Font color of subtitle
 subtitleFontSize | `string` | `'10'` | Font size of subtitle
