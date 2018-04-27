@@ -41,6 +41,7 @@ export interface CircleProgressOptionsInterface {
   showBackground?: boolean;
   showInnerStroke?: boolean;
   clockwise?: boolean;
+  responsive?: boolean;
 }
 
 export class CircleProgressOptions implements CircleProgressOptionsInterface {
@@ -82,12 +83,14 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
   showBackground = true;
   showInnerStroke = true;
   clockwise = true;
+  responsive = false;
 }
 
 @Component({
   selector: 'circle-progress',
   template: `
     <svg xmlns="http://www.w3.org/2000/svg" *ngIf="svg" 
+      [attr.viewBox]="svg.viewBox" preserveAspectRatio="xMidYMid meet"
       [attr.height]="svg.height" [attr.width]="svg.width" (click)="emitClickEvent($event)" [attr.class]="options.class">
       <circle *ngIf="options.showBackground" 
         [attr.cx]="svg.backgroundCircle.cx" 
@@ -188,6 +191,7 @@ export class CircleProgressComponent implements OnChanges {
   @Input() showBackground: boolean;
   @Input() showInnerStroke: boolean;
   @Input() clockwise: boolean;
+  @Input() responsive: boolean;
 
   @Input('options') templateOptions: CircleProgressOptions;
 
@@ -360,8 +364,10 @@ export class CircleProgressComponent implements OnChanges {
     }
     // Bring it all together
     this.svg = {
-      width: boxSize,
-      height: boxSize,
+      viewBox: `0 0 ${boxSize} ${boxSize}`,
+      // Set both width and height to '100%' if it's responsive
+      width: this.options.responsive ? '100%' : boxSize,
+      height:  this.options.responsive ? '100%' : boxSize,
       backgroundCircle: {
         cx: centre.x,
         cy: centre.y,
