@@ -14,20 +14,16 @@ It is a simple circle progress component created for [angular](https://angular.i
 
 To install this library, run:
 
-```
-bash
-```
-
 ### Angular 6 projects
 
-```
+```bash
 $ npm install ng-circle-progress --save
 ```
 
-### Angular 5 projects
+### Angular 5 or Angular 4 projects
 
-```
-$ npm install ng-circle-progress@1.1.0 --save
+```bash
+$ npm install ng-circle-progress@1.0.0 --save
 ```
 
 Once you have installed it, you can import it in any Angular application,
