@@ -1,7 +1,7 @@
 {
   "name": "ng-circle-progress",
-  "version": "1.1.1",
-  "description": "A simple circle progress component created for Angular 4 based only on SVG graphics",
+  "version": "1.2.0",
+  "description": "A simple circle progress component created for Angular based only on SVG graphics",
   "repository": {
     "type": "git",
     "url": "https://github.com/bootsoon/ng-circle-progress"

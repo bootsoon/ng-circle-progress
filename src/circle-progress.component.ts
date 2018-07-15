@@ -41,6 +41,7 @@ export interface CircleProgressOptionsInterface {
     showInnerStroke?: boolean;
     clockwise?: boolean;
     responsive?: boolean;
+    startFromZero?: boolean;
 }
 
 export class CircleProgressOptions implements CircleProgressOptionsInterface {
@@ -83,6 +84,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     showInnerStroke = true;
     clockwise = true;
     responsive = false;
+    startFromZero = true;
 }
 
 @Component({
@@ -194,6 +196,7 @@ export class CircleProgressComponent implements OnChanges {
     @Input() showInnerStroke: boolean;
     @Input() clockwise: boolean;
     @Input() responsive: boolean;
+    @Input() startFromZero: boolean;
 
     @Input('options') templateOptions: CircleProgressOptions;
 
@@ -201,13 +204,15 @@ export class CircleProgressComponent implements OnChanges {
 
     options: CircleProgressOptions = new CircleProgressOptions();
     defaultOptions: CircleProgressOptions = new CircleProgressOptions();
+    _lastPercent: number = 0;
     render = () => {
         this.applyOptions();
         if (this.options.animation && this.options.animationDuration > 0) {
-            this.animate();
+            this.animate(this._lastPercent, this.options.percent);
         } else {
             this.draw(this.options.percent);
         }
+        this._lastPercent = this.options.percent;
     };
     polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
         let angleInRadius = angleInDegrees * Math.PI / 180;
@@ -364,21 +369,25 @@ export class CircleProgressComponent implements OnChanges {
             subtitle: subtitle,
         };
     };
-    getAnimationParameters = () => {
+    getAnimationParameters = (previousPercent: number, currentPercent: number) => {
         const MIN_INTERVAL = 10;
         let times, step, interval;
-        if (this.options.percent >= 100) {
+        let fromPercent = this.options.startFromZero ? 0 : (previousPercent < 0 ? 0 : previousPercent);
+        let toPercent = currentPercent < 0 ? 0 : this.min(currentPercent, this.options.maxPercent);
+        let delta = Math.abs(Math.round(toPercent - fromPercent));
+
+        if (delta >= 100) {
             // we will finish animation in 100 times
             times = 100;
             if (!this.options.animateTitle && !this.options.animateSubtitle) {
                 step = 1;
             } else {
                 // show title or subtitle animation even if the arc is full, we also need to finish it in 100 times.
-                step = Math.round(this.min(this.options.percent, this.options.maxPercent) / times);
+                step = Math.round(delta / times);
             }
         } else {
             // we will finish in as many times as the number of percent.
-            times = this.options.percent;
+            times = delta;
             step = 1;
         }
         // Get the interval of timer
@@ -387,10 +396,10 @@ export class CircleProgressComponent implements OnChanges {
         if (interval < MIN_INTERVAL) {
             interval = MIN_INTERVAL;
             times = this.options.animationDuration / interval;
-            if (!this.options.animateTitle && !this.options.animateSubtitle && this.options.percent > 100) {
+            if (!this.options.animateTitle && !this.options.animateSubtitle && delta > 100) {
                 step = Math.round(100 / times);
             } else {
-                step = Math.round(this.min(this.options.percent, this.options.maxPercent) / times);
+                step = Math.round(delta / times);
             }
         }
         // step must be greater than 0.
@@ -399,30 +408,49 @@ export class CircleProgressComponent implements OnChanges {
         }
         return {times: times, step: step, interval: interval};
     };
-    animate = () => {
+    animate = (previousPercent: number, currentPercent: number) => {
         if (this._timerSubscription && !this._timerSubscription.closed) {
             this._timerSubscription.unsubscribe();
         }
-        let {step: step, interval: interval} = this.getAnimationParameters();
-        let count = 0;
-        this._timerSubscription = timer(0, interval).subscribe(() => {
-            count += step;
-            if (count <= this.options.percent) {
-                if (!this.options.animateTitle && !this.options.animateSubtitle && count >= 100) {
-                    this.draw(this.options.percent);
-                    this._timerSubscription.unsubscribe();
+        let fromPercent = this.options.startFromZero ? 0 : previousPercent;
+        let toPercent = currentPercent;
+        let {step: step, interval: interval} = this.getAnimationParameters(fromPercent, toPercent);
+        let count = fromPercent;
+        if(fromPercent < toPercent){
+            this._timerSubscription = timer(0, interval).subscribe(() => {
+                count += step;
+                if (count <= toPercent) {
+                    if (!this.options.animateTitle && !this.options.animateSubtitle && count >= 100) {
+                        this.draw(toPercent);
+                        this._timerSubscription.unsubscribe();
+                    } else {
+                        this.draw(count);
+                    }
                 } else {
-                    this.draw(count);
+                    this.draw(toPercent);
+                    this._timerSubscription.unsubscribe();
                 }
-            } else {
-                this.draw(this.options.percent);
-                this._timerSubscription.unsubscribe();
-            }
-        });
+            });
+        }else{
+            this._timerSubscription = timer(0, interval).subscribe(() => {
+                count -= step;
+                if (count >= toPercent) {
+                    if (!this.options.animateTitle && !this.options.animateSubtitle && toPercent >= 100) {
+                        this.draw(toPercent);
+                        this._timerSubscription.unsubscribe();
+                    } else {
+                        this.draw(count);
+                    }
+                } else {
+                    this.draw(toPercent);
+                    this._timerSubscription.unsubscribe();
+                }
+            });
+        }
     };
     emitClickEvent = (event) => {
         if (this.options.renderOnClick) {
-            this.animate();
+            this.animate(0, this.options.percent);
         }
         this.onClick.emit(event);
     };
@@ -439,7 +467,7 @@ export class CircleProgressComponent implements OnChanges {
         // make sure key options valid
         this.options.radius = Math.abs(+this.options.radius);
         this.options.space = +this.options.space;
-        this.options.percent = Math.abs(+this.options.percent);
+        this.options.percent = +this.options.percent > 0 ? +this.options.percent : 0;
         this.options.maxPercent = Math.abs(+this.options.maxPercent);
         this.options.animationDuration = Math.abs(this.options.animationDuration);
         this.options.outerStrokeWidth = Math.abs(+this.options.outerStrokeWidth);

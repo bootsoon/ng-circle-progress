@@ -91,6 +91,7 @@ maxPercent | `number` | `1000` | Max number of percent you want to show
 radius | `number` | `90` | Radius of circle
 clockwise | `boolean` | `true` | Whether to rotate clockwise or counter-clockwise
 responsive | `boolean` | `false` | Whether to make the circle responsive
+startFromZero | `boolean` | `true` | Whether to start the percent from zero 
 showTitle | `boolean` | `true` | Whether to display title
 showSubtitle | `boolean` | `true` | Whether to display subtitle
 showUnits | `boolean` | `true` | Whether to display units
