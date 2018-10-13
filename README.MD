@@ -95,6 +95,7 @@ startFromZero | `boolean` | `true` | Whether to start the percent from zero
 showTitle | `boolean` | `true` | Whether to display title
 showSubtitle | `boolean` | `true` | Whether to display subtitle
 showUnits | `boolean` | `true` | Whether to display units
+showImage | `boolean` | `true` | Whether to display image. All text will be hidden if showImage is true.
 showBackground | `boolean` | `true` | Whether to display background circle
 showInnerStroke | `boolean` | `true` | Whether to display inner stroke
 backgroundStroke | `string` | `'transparent'` | Background stroke color
@@ -121,6 +122,9 @@ subtitle | `string\|Array<String>` | `'Percent'` | text showed as subtitle
 subtitleFormat | `Function` | `undefined` | A callback function to format subtitle. It returns a string or an array of string.
 subtitleColor | `string` | `'#A9A9A9'` | Font color of subtitle
 subtitleFontSize | `string` | `'10'` | Font size of subtitle
+imageSrc | `string` | `'/assets/images/music.svg'` | Src of image
+imageHeight | `number` | `80` | Height of image
+imageWidth | `number` | `80` | Width of image
 animation | `boolean` | `true` | Whether to animate the outer circle when rendering
 animateTitle | `boolean` | `true` | Whether to animate the title when rendering
 animateSubtitle | `boolean` | `false` | Whether to animate the subtitle when rendering

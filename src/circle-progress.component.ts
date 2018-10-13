@@ -30,6 +30,9 @@ export interface CircleProgressOptionsInterface {
     subtitle?: string | Array<String>;
     subtitleColor?: string;
     subtitleFontSize?: string;
+    imageSrc?: string;
+    imageHeight?: number;
+    imageWidth?: number;    
     animation?: boolean;
     animateTitle?: boolean;
     animateSubtitle?: boolean;
@@ -37,6 +40,7 @@ export interface CircleProgressOptionsInterface {
     showTitle?: boolean;
     showSubtitle?: boolean;
     showUnits?: boolean;
+    showImage?: boolean;
     showBackground?: boolean;
     showInnerStroke?: boolean;
     clockwise?: boolean;
@@ -73,6 +77,9 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     subtitle: string | Array<String> = 'progress';
     subtitleColor = '#A9A9A9';
     subtitleFontSize = '10';
+    imageSrc = undefined;
+    imageHeight = undefined;
+    imageWidth = undefined;
     animation = true;
     animateTitle = true;
     animateSubtitle = false;
@@ -80,6 +87,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     showTitle = true;
     showSubtitle = true;
     showUnits = true;
+    showImage = false;
     showBackground = true;
     showInnerStroke = true;
     clockwise = true;
@@ -114,7 +122,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                     [attr.stroke-width]="svg.path.strokeWidth"
                     [attr.stroke-linecap]="svg.path.strokeLinecap"
                     [attr.fill]="svg.path.fill"/>
-            <text *ngIf="options.showTitle || options.showUnits || options.showSubtitle"
+            <text *ngIf="!options.showImage && (options.showTitle || options.showUnits || options.showSubtitle)"
                   alignment-baseline="baseline"
                   [attr.x]="svg.circle.cx"
                   [attr.y]="svg.circle.cy"
@@ -142,6 +150,13 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                     </tspan>
                 </ng-container>
             </text>
+            <image *ngIf="options.showImage" preserveAspectRatio="none" 
+                [attr.height]="svg.image.height"
+                [attr.width]="svg.image.width"
+                [attr.xlink:href]="svg.image.src"
+                [attr.x]="svg.image.x"
+                [attr.y]="svg.image.y"
+            />
         </svg>
     `
 })
@@ -184,6 +199,10 @@ export class CircleProgressComponent implements OnChanges {
     @Input() subtitleColor: string;
     @Input() subtitleFontSize: string;
 
+    @Input() imageSrc: string;
+    @Input() imageHeight: number;
+    @Input() imageWidth: number;
+
     @Input() animation: boolean;
     @Input() animateTitle: boolean;
     @Input() animateSubtitle: boolean;
@@ -192,6 +211,7 @@ export class CircleProgressComponent implements OnChanges {
     @Input() showTitle: boolean;
     @Input() showSubtitle: boolean;
     @Input() showUnits: boolean;
+    @Input() showImage: boolean;
     @Input() showBackground: boolean;
     @Input() showInnerStroke: boolean;
     @Input() clockwise: boolean;
@@ -367,6 +387,13 @@ export class CircleProgressComponent implements OnChanges {
             title: title,
             units: units,
             subtitle: subtitle,
+            image: {
+                x: centre.x - this.options.imageWidth / 2,
+                y: centre.y - this.options.imageHeight / 2,
+                src: this.options.imageSrc,
+                width: this.options.imageWidth,
+                height: this.options.imageHeight,
+            },
         };
     };
     getAnimationParameters = (previousPercent: number, currentPercent: number) => {
