@@ -3,7 +3,9 @@ import {Subscription, timer} from 'rxjs';
 
 export interface CircleProgressOptionsInterface {
     class?: string;
+    backgroundGradient?: boolean;
     backgroundColor?: string;
+    backgroundGradientStopColor?: string;
     backgroundOpacity?: number;
     backgroundStroke?: string;
     backgroundStrokeWidth?: number;
@@ -16,9 +18,12 @@ export interface CircleProgressOptionsInterface {
     renderOnClick?: boolean;
     units?: string;
     unitsFontSize?: string;
+    unitsFontWeight?: string;
     unitsColor?: string;
+    outerStrokeGradient?: boolean;
     outerStrokeWidth?: number;
     outerStrokeColor?: string;
+    outerStrokeGradientStopColor?: string;
     outerStrokeLinecap?: string;
     innerStrokeColor?: string;
     innerStrokeWidth?: number;
@@ -26,10 +31,12 @@ export interface CircleProgressOptionsInterface {
     title?: string | Array<String>;
     titleColor?: string;
     titleFontSize?: string;
+    titleFontWeight?: string;
     subtitleFormat?: Function;
     subtitle?: string | Array<String>;
     subtitleColor?: string;
     subtitleFontSize?: string;
+    subtitleFontWeight?: string;
     imageSrc?: string;
     imageHeight?: number;
     imageWidth?: number;    
@@ -46,11 +53,14 @@ export interface CircleProgressOptionsInterface {
     clockwise?: boolean;
     responsive?: boolean;
     startFromZero?: boolean;
+    showZeroOuterStroke?: boolean;
 }
 
 export class CircleProgressOptions implements CircleProgressOptionsInterface {
     class = '';
+    backgroundGradient = false;
     backgroundColor = 'transparent';
+    backgroundGradientStopColor = 'transparent';
     backgroundOpacity = 1;
     backgroundStroke = 'transparent';
     backgroundStrokeWidth = 0;
@@ -63,9 +73,12 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     renderOnClick = true;
     units = '%';
     unitsFontSize = '10';
+    unitsFontWeight = 'normal';
     unitsColor = '#444444';
+    outerStrokeGradient = false;
     outerStrokeWidth = 8;
     outerStrokeColor = '#78C000';
+    outerStrokeGradientStopColor = 'transparent';
     outerStrokeLinecap = 'round';
     innerStrokeColor = '#C7E596';
     innerStrokeWidth = 4;
@@ -73,10 +86,12 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     title: string | Array<String> = 'auto';
     titleColor = '#444444';
     titleFontSize = '20';
+    titleFontWeight = 'normal';
     subtitleFormat = undefined;
     subtitle: string | Array<String> = 'progress';
     subtitleColor = '#A9A9A9';
     subtitleFontSize = '10';
+    subtitleFontWeight = 'normal';
     imageSrc = undefined;
     imageHeight = undefined;
     imageWidth = undefined;
@@ -93,6 +108,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     clockwise = true;
     responsive = false;
     startFromZero = true;
+    showZeroOuterStroke = true;
 }
 
 @Component({
@@ -101,14 +117,34 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
         <svg xmlns="http://www.w3.org/2000/svg" *ngIf="svg"
              [attr.viewBox]="svg.viewBox" preserveAspectRatio="xMidYMid meet"
              [attr.height]="svg.height" [attr.width]="svg.width" (click)="emitClickEvent($event)" [attr.class]="options.class">
-            <circle *ngIf="options.showBackground"
-                    [attr.cx]="svg.backgroundCircle.cx"
-                    [attr.cy]="svg.backgroundCircle.cy"
-                    [attr.r]="svg.backgroundCircle.r"
-                    [attr.fill]="svg.backgroundCircle.fill"
-                    [attr.fill-opacity]="svg.backgroundCircle.fillOpacity"
-                    [attr.stroke]="svg.backgroundCircle.stroke"
-                    [attr.stroke-width]="svg.backgroundCircle.strokeWidth"/>
+            <defs>
+                <linearGradient *ngIf="options.outerStrokeGradient" [attr.id]="svg.outerLinearGradient.id">
+                    <stop offset="5%" [attr.stop-color]="svg.outerLinearGradient.colorStop1"  [attr.stop-opacity]="1"/>
+                    <stop offset="95%" [attr.stop-color]="svg.outerLinearGradient.colorStop2" [attr.stop-opacity]="1"/>
+                </linearGradient>
+                <radialGradient *ngIf="options.backgroundGradient" [attr.id]="svg.radialGradient.id">
+                    <stop offset="5%" [attr.stop-color]="svg.radialGradient.colorStop1" [attr.stop-opacity]="1"/>
+                    <stop offset="95%" [attr.stop-color]="svg.radialGradient.colorStop2" [attr.stop-opacity]="1"/>
+                </radialGradient>
+            </defs>
+            <ng-container *ngIf="options.showBackground">
+                <circle *ngIf="!options.backgroundGradient"
+                        [attr.cx]="svg.backgroundCircle.cx"
+                        [attr.cy]="svg.backgroundCircle.cy"
+                        [attr.r]="svg.backgroundCircle.r"
+                        [attr.fill]="svg.backgroundCircle.fill"
+                        [attr.fill-opacity]="svg.backgroundCircle.fillOpacity"
+                        [attr.stroke]="svg.backgroundCircle.stroke"
+                        [attr.stroke-width]="svg.backgroundCircle.strokeWidth"/>
+                <circle *ngIf="options.backgroundGradient"
+                        [attr.cx]="svg.backgroundCircle.cx"
+                        [attr.cy]="svg.backgroundCircle.cy"
+                        [attr.r]="svg.backgroundCircle.r"
+                        attr.fill="url(#{{svg.radialGradient.id}})"
+                        [attr.fill-opacity]="svg.backgroundCircle.fillOpacity"
+                        [attr.stroke]="svg.backgroundCircle.stroke"
+                        [attr.stroke-width]="svg.backgroundCircle.strokeWidth"/>
+            </ng-container>            
             <circle *ngIf="options.showInnerStroke"
                     [attr.cx]="svg.circle.cx"
                     [attr.cy]="svg.circle.cy"
@@ -116,12 +152,20 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                     [attr.fill]="svg.circle.fill"
                     [attr.stroke]="svg.circle.stroke"
                     [attr.stroke-width]="svg.circle.strokeWidth"/>
-            <path
-                    [attr.d]="svg.path.d"
-                    [attr.stroke]="svg.path.stroke"
-                    [attr.stroke-width]="svg.path.strokeWidth"
-                    [attr.stroke-linecap]="svg.path.strokeLinecap"
-                    [attr.fill]="svg.path.fill"/>
+            <ng-container *ngIf="+options.percent!==0 || options.showZeroOuterStroke">
+                <path *ngIf="!options.outerStrokeGradient"
+                        [attr.d]="svg.path.d"
+                        [attr.stroke]="svg.path.stroke"
+                        [attr.stroke-width]="svg.path.strokeWidth"
+                        [attr.stroke-linecap]="svg.path.strokeLinecap"
+                        [attr.fill]="svg.path.fill"/>
+                <path *ngIf="options.outerStrokeGradient"
+                        [attr.d]="svg.path.d"
+                        attr.stroke="url(#{{svg.outerLinearGradient.id}})"
+                        [attr.stroke-width]="svg.path.strokeWidth"
+                        [attr.stroke-linecap]="svg.path.strokeLinecap"
+                        [attr.fill]="svg.path.fill"/>
+            </ng-container>
             <text *ngIf="!options.showImage && (options.showTitle || options.showUnits || options.showSubtitle)"
                   alignment-baseline="baseline"
                   [attr.x]="svg.circle.cx"
@@ -133,11 +177,13 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                            [attr.y]="svg.title.y"
                            [attr.dy]="tspan.dy"
                            [attr.font-size]="svg.title.fontSize"
+                           [attr.font-weight]="svg.title.fontWeight"
                            [attr.fill]="svg.title.color">{{tspan.span}}
                     </tspan>
                 </ng-container>
                 <tspan *ngIf="options.showUnits"
                        [attr.font-size]="svg.units.fontSize"
+                       [attr.font-weight]="svg.units.fontWeight"
                        [attr.fill]="svg.units.color">{{svg.units.text}}
                 </tspan>
                 <ng-container *ngIf="options.showSubtitle">
@@ -146,6 +192,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                            [attr.y]="svg.subtitle.y"
                            [attr.dy]="tspan.dy"
                            [attr.font-size]="svg.subtitle.fontSize"
+                           [attr.font-weight]="svg.subtitle.fontWeight"
                            [attr.fill]="svg.subtitle.color">{{tspan.span}}
                     </tspan>
                 </ng-container>
@@ -165,7 +212,9 @@ export class CircleProgressComponent implements OnChanges {
     @Output() onClick: EventEmitter<any> = new EventEmitter();
 
     @Input() class: string;
+    @Input() backgroundGradient: boolean;
     @Input() backgroundColor: string;
+    @Input() backgroundGradientStopColor: String;
     @Input() backgroundOpacity: number;
     @Input() backgroundStroke: string;
     @Input() backgroundStrokeWidth: number;
@@ -180,10 +229,13 @@ export class CircleProgressComponent implements OnChanges {
 
     @Input() units: string;
     @Input() unitsFontSize: string;
+    @Input() unitsFontWeight: string;
     @Input() unitsColor: string;
 
+    @Input() outerStrokeGradient: boolean;
     @Input() outerStrokeWidth: number;
     @Input() outerStrokeColor: string;
+    @Input() outerStrokeGradientStopColor: String;
     @Input() outerStrokeLinecap: string;
 
     @Input() innerStrokeColor: string;
@@ -193,11 +245,13 @@ export class CircleProgressComponent implements OnChanges {
     @Input() title: string | Array<String>;
     @Input() titleColor: string;
     @Input() titleFontSize: string;
+    @Input() titleFontWeight: string;
 
     @Input() subtitleFormat: Function;
     @Input() subtitle: string | string[];
     @Input() subtitleColor: string;
     @Input() subtitleFontSize: string;
+    @Input() subtitleFontWeight: string;
 
     @Input() imageSrc: string;
     @Input() imageHeight: number;
@@ -217,6 +271,7 @@ export class CircleProgressComponent implements OnChanges {
     @Input() clockwise: boolean;
     @Input() responsive: boolean;
     @Input() startFromZero: boolean;
+    @Input() showZeroOuterStroke: boolean;
 
     @Input('options') templateOptions: CircleProgressOptions;
 
@@ -225,6 +280,7 @@ export class CircleProgressComponent implements OnChanges {
     options: CircleProgressOptions = new CircleProgressOptions();
     defaultOptions: CircleProgressOptions = new CircleProgressOptions();
     _lastPercent: number = 0;
+    _gradientUUID: string = null;
     render = () => {
         this.applyOptions();
         if (this.options.animation && this.options.animationDuration > 0) {
@@ -281,6 +337,7 @@ export class CircleProgressComponent implements OnChanges {
             textAnchor: 'middle',
             color: this.options.titleColor,
             fontSize: this.options.titleFontSize,
+            fontWeight: this.options.titleFontWeight,
             texts: [],
             tspans: []
         };
@@ -310,6 +367,7 @@ export class CircleProgressComponent implements OnChanges {
             textAnchor: 'middle',
             color: this.options.subtitleColor,
             fontSize: this.options.subtitleFontSize,
+            fontWeight: this.options.subtitleFontWeight,
             texts: [],
             tspans: []
         }
@@ -332,6 +390,7 @@ export class CircleProgressComponent implements OnChanges {
         let units = {
             text: `${this.options.units}`,
             fontSize: this.options.unitsFontSize,
+            fontWeight: this.options.unitsFontWeight,
             color: this.options.unitsColor
         };
         // get total count of text lines to be shown
@@ -351,6 +410,10 @@ export class CircleProgressComponent implements OnChanges {
                 subtitle.tspans.push({span: span, dy: this.getRelativeY(rowNum, rowCount)})
                 rowNum++;
             }
+        }
+        // create ID for gradient element
+        if (null === this._gradientUUID){
+            this._gradientUUID = this.uuid();
         }
         // Bring it all together
         this.svg = {
@@ -394,6 +457,16 @@ export class CircleProgressComponent implements OnChanges {
                 width: this.options.imageWidth,
                 height: this.options.imageHeight,
             },
+            outerLinearGradient: {
+                id: 'outer-linear-' + this._gradientUUID,
+                colorStop1: this.options.outerStrokeColor,
+                colorStop2: this.options.outerStrokeGradientStopColor === 'transparent' ? '#FFF' : this.options.outerStrokeGradientStopColor,
+            },
+            radialGradient: {
+                id: 'radial-' + this._gradientUUID,
+                colorStop1: this.options.backgroundColor,
+                colorStop2: this.options.backgroundGradientStopColor === 'transparent' ? '#FFF' : this.options.backgroundGradientStopColor,
+            }
         };
     };
     getAnimationParameters = (previousPercent: number, currentPercent: number) => {
@@ -514,6 +587,17 @@ export class CircleProgressComponent implements OnChanges {
     private max = (a, b) => {
         return a > b ? a : b;
     };
+
+    private uuid = () => {
+        // https://www.w3resource.com/javascript-exercises/javascript-math-exercise-23.php
+        var dt = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (dt + Math.random()*16)%16 | 0;
+            dt = Math.floor(dt/16);
+            return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    }
 
     constructor(
         defaultOptions: CircleProgressOptions) {

@@ -91,7 +91,8 @@ maxPercent | `number` | `1000` | Max number of percent you want to show
 radius | `number` | `90` | Radius of circle
 clockwise | `boolean` | `true` | Whether to rotate clockwise or counter-clockwise
 responsive | `boolean` | `false` | Whether to make the circle responsive
-startFromZero | `boolean` | `true` | Whether to start the percent from zero 
+startFromZero | `boolean` | `true` | Whether to start the percent from zero
+showZeroOuterStroke | `boolean` | `true` | Whether to show the bar if percent is zero
 showTitle | `boolean` | `true` | Whether to display title
 showSubtitle | `boolean` | `true` | Whether to display subtitle
 showUnits | `boolean` | `true` | Whether to display units
@@ -101,16 +102,21 @@ showInnerStroke | `boolean` | `true` | Whether to display inner stroke
 backgroundStroke | `string` | `'transparent'` | Background stroke color
 backgroundStrokeWidth | `number` | `0` | Stroke width of background circle
 backgroundPadding | `number` | `5` | Padding of background circle
+backgroundGradient | `boolean` | `false` | Make background gradient
 backgroundColor | `string` | `'transparent'` | Background color
+backgroundGradientStopColor | `string` | `'transparent'` | Background gradient stop color
 backgroundOpacity | `number` | `1` | Opacity of background color
 space | `number` | `4` | Space between outer circle and inner circle
 toFixed | `number` | `0` | Using fixed digital notation in Title
 renderOnClick | `boolean` | `true` | Render when component is clicked
 units | `string` | `'%'` | Units showed aside the title
 unitsFontSize | `string` | `'10'` | Font size of units
+unitsFontWeight | `string` | `'100'` | Font weight of units
 unitsColor | `string` | `'#444444'` | Font color of units
 outerStrokeWidth | `number` | `8` | Stroke width of outer circle (progress circle)
+outerStrokeGradient | `boolean` | `false` | Make outer circle gradient
 outerStrokeColor | `sting` | `'#78C000'` | Stroke color of outer circle
+outerStrokeGradientStopColor | `string` | `'transparent'` | Stroke gradient stop color of outer circle
 outerStrokeLinecap | `sting` | `'round'` | Stroke linecap of outer circle. Possible values(butt, round, square, inherit)
 innerStrokeWidth | `number` | `4` | Stroke width of inner circle
 innerStrokeColor | `sting` | `'#C7E596'` | Stroke color of inner circle
@@ -118,10 +124,12 @@ title | `string\|Array<String>` | `'auto'` | text showed as title. Percentage is
 titleFormat | `Function` | `undefined` | A callback function to format title. It returns a string or an array of string.
 titleColor | `string` | `'#444444'` | Font color of title
 titleFontSize | `string` | `'20'` | Font size of title
+titleFontWeight | `string` | `'100'` | Font weight of title
 subtitle | `string\|Array<String>` | `'Percent'` | text showed as subtitle
 subtitleFormat | `Function` | `undefined` | A callback function to format subtitle. It returns a string or an array of string.
 subtitleColor | `string` | `'#A9A9A9'` | Font color of subtitle
 subtitleFontSize | `string` | `'10'` | Font size of subtitle
+subtitleFontWeight | `string` | `'100'` | Font weight of subtitle
 imageSrc | `string` | `'/assets/images/music.svg'` | Src of image
 imageHeight | `number` | `80` | Height of image
 imageWidth | `number` | `80` | Width of image
