@@ -2,8 +2,8 @@
   "name": "ng-circle-progress",
   "version": "1.4.0",
   "scripts": {
-    "build": "gulp build",
-    "build:watch": "gulp",
+    "build": "ng-packagr -p ng-package.json",
+    "build:watch": "npm run build -- -w",
     "lint": "tslint --type-check --project tsconfig.json src/**/*.ts",
     "test": "tsc && karma start"
   },
@@ -47,6 +47,7 @@
     "karma-coverage-istanbul-reporter": "^0.2.0",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "ng-packagr": "^5.1.0",
     "node-watch": "^0.5.2",
     "protractor": "~5.1.0",
     "rollup": "^0.41.6",
@@ -59,5 +60,8 @@
   },
   "engines": {
     "node": ">=6.0.0"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=4.0.0"
   }
 }
