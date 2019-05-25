@@ -23,8 +23,6 @@
   "module": "ng-circle-progress.js",
   "typings": "ng-circle-progress.d.ts",
   "peerDependencies": {
-    "@angular/core": ">=4.0.0",
-    "rxjs": "^6.2.1",
-    "zone.js": "^0.8.4"
+    "@angular/core": ">=4.0.0"
   }
 }
