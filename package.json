@@ -1,6 +1,6 @@
 {
   "name": "ng-circle-progress",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "scripts": {
     "build": "ng-packagr -p ng-package.json",
     "build:watch": "npm run build -- -w",

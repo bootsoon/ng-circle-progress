@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, Inject, OnInit, OnDestroy, ElementRef, SimpleChanges} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
 import {Subscription, timer} from 'rxjs';
 
 export interface CircleProgressOptionsInterface {
@@ -54,6 +55,7 @@ export interface CircleProgressOptionsInterface {
     responsive?: boolean;
     startFromZero?: boolean;
     showZeroOuterStroke?: boolean;
+    lazy?: boolean;
 }
 
 export class CircleProgressOptions implements CircleProgressOptionsInterface {
@@ -109,8 +111,10 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     responsive = false;
     startFromZero = true;
     showZeroOuterStroke = true;
+    lazy = true;
 }
 
+/** @dynamic Prevent compiling error when using type `Document` https://github.com/angular/angular/issues/20351 */
 @Component({
     selector: 'circle-progress',
     template: `
@@ -178,14 +182,12 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                            [attr.dy]="tspan.dy"
                            [attr.font-size]="svg.title.fontSize"
                            [attr.font-weight]="svg.title.fontWeight"
-                           [attr.fill]="svg.title.color">{{tspan.span}}
-                    </tspan>
+                           [attr.fill]="svg.title.color">{{tspan.span}}</tspan>
                 </ng-container>
                 <tspan *ngIf="options.showUnits"
                        [attr.font-size]="svg.units.fontSize"
                        [attr.font-weight]="svg.units.fontWeight"
-                       [attr.fill]="svg.units.color">{{svg.units.text}}
-                </tspan>
+                       [attr.fill]="svg.units.color">{{svg.units.text}}</tspan>
                 <ng-container *ngIf="options.showSubtitle">
                     <tspan *ngFor="let tspan of svg.subtitle.tspans"
                            [attr.x]="svg.subtitle.x"
@@ -193,8 +195,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                            [attr.dy]="tspan.dy"
                            [attr.font-size]="svg.subtitle.fontSize"
                            [attr.font-weight]="svg.subtitle.fontWeight"
-                           [attr.fill]="svg.subtitle.color">{{tspan.span}}
-                    </tspan>
+                           [attr.fill]="svg.subtitle.color">{{tspan.span}}</tspan>
                 </ng-container>
             </text>
             <image *ngIf="options.showImage" preserveAspectRatio="none" 
@@ -207,10 +208,11 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
         </svg>
     `
 })
-export class CircleProgressComponent implements OnChanges {
+export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
 
     @Output() onClick: EventEmitter<any> = new EventEmitter();
 
+    @Input() name: string;
     @Input() class: string;
     @Input() backgroundGradient: boolean;
     @Input() backgroundColor: string;
@@ -272,8 +274,19 @@ export class CircleProgressComponent implements OnChanges {
     @Input() responsive: boolean;
     @Input() startFromZero: boolean;
     @Input() showZeroOuterStroke: boolean;
+    
+    @Input() lazy: boolean;
 
     @Input('options') templateOptions: CircleProgressOptions;
+
+    // <svg> of component
+    svgElement: HTMLElement = null;
+    // whether <svg> is in viewport
+    isInViewport: Boolean = false;
+    // event for notifying viewport change caused by scrolling or resizing
+    onViewportChanged: EventEmitter<{oldValue: Boolean, newValue: Boolean}> = new EventEmitter;
+    window: Window;
+    _viewportChangedSubscriber: Subscription = null;
 
     svg: any;
 
@@ -282,15 +295,32 @@ export class CircleProgressComponent implements OnChanges {
     _lastPercent: number = 0;
     _gradientUUID: string = null;
     render = () => {
+
         this.applyOptions();
-        if (this.options.animation && this.options.animationDuration > 0) {
-            this.animate(this._lastPercent, this.options.percent);
+
+        if(this.options.lazy){
+            // Draw svg if it doesn't exist
+            this.svgElement === null && this.draw(this._lastPercent);
+            // Draw it only when it's in the viewport
+            if(this.isInViewport){
+                // Draw it at the latest position when I am in.
+                if (this.options.animation && this.options.animationDuration > 0) {
+                    this.animate(this._lastPercent, this.options.percent);
+                } else {
+                    this.draw(this.options.percent);
+                }
+                this._lastPercent = this.options.percent;
+            }
         } else {
-            this.draw(this.options.percent);
+            if (this.options.animation && this.options.animationDuration > 0) {
+                this.animate(this._lastPercent, this.options.percent);
+            } else {
+                this.draw(this.options.percent);
+            }
+            this._lastPercent = this.options.percent;
         }
-        this._lastPercent = this.options.percent;
     };
-    polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
+    polarToCartesian = (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
         let angleInRadius = angleInDegrees * Math.PI / 180;
         let x = centerX + Math.sin(angleInRadius) * radius;
         let y = centerY - Math.cos(angleInRadius) * radius;
@@ -319,7 +349,7 @@ export class CircleProgressComponent implements OnChanges {
             endPoint.x = endPoint.x + (this.options.clockwise ? -0.01 : +0.01);
         }
         // largeArcFlag and sweepFlag
-        let largeArcFlag, sweepFlag;
+        let largeArcFlag: any, sweepFlag: any;
         if (circlePercent > 50) {
             [largeArcFlag, sweepFlag] = this.options.clockwise ? [1, 1] : [1, 0];
         } else {
@@ -471,7 +501,7 @@ export class CircleProgressComponent implements OnChanges {
     };
     getAnimationParameters = (previousPercent: number, currentPercent: number) => {
         const MIN_INTERVAL = 10;
-        let times, step, interval;
+        let times: number, step: number, interval: number;
         let fromPercent = this.options.startFromZero ? 0 : (previousPercent < 0 ? 0 : previousPercent);
         let toPercent = currentPercent < 0 ? 0 : this.min(currentPercent, this.options.maxPercent);
         let delta = Math.abs(Math.round(toPercent - fromPercent));
@@ -548,7 +578,7 @@ export class CircleProgressComponent implements OnChanges {
             });
         }
     };
-    emitClickEvent = (event) => {
+    emitClickEvent = (event: any) => {
         if (this.options.renderOnClick) {
             this.animate(0, this.options.percent);
         }
@@ -580,11 +610,11 @@ export class CircleProgressComponent implements OnChanges {
         return (initialOffset + offset * (rowNum - rowCount / 2)).toFixed(2) + 'em';
     };
 
-    private min = (a, b) => {
+    private min = (a: number, b: number) => {
         return a < b ? a : b;
     };
 
-    private max = (a, b) => {
+    private max = (a: number, b: number) => {
         return a > b ? a : b;
     };
 
@@ -599,18 +629,104 @@ export class CircleProgressComponent implements OnChanges {
         return uuid;
     }
 
-    constructor(
-        defaultOptions: CircleProgressOptions) {
-        Object.assign(this.options, defaultOptions);
-        Object.assign(this.defaultOptions, defaultOptions);
-    }
-
     public isDrawing(): boolean {
         return (this._timerSubscription && !this._timerSubscription.closed);
     }
 
-    ngOnChanges(changes) {
+    public findSvgElement = function() {
+        if(this.svgElement === null){
+            let tags = this.elRef.nativeElement.getElementsByTagName('svg');
+            if(tags.length>0){
+                this.svgElement = tags[0];
+            }
+        }
+    }
+
+    private isElementInViewport (el) : Boolean {
+        // Return false if el has not been created in page.
+        if(el === null || el === undefined) return false;
+        // Check if the element is out of view due to a container scrolling
+        let rect = el.getBoundingClientRect(), parent = el.parentNode, parentRect;
+        do {
+          parentRect = parent.getBoundingClientRect();
+          if (rect.top >= parentRect.bottom) return false;
+          if (rect.bottom <= parentRect.top) return false;
+          if (rect.left >= parentRect.right) return false;
+          if (rect.right <= parentRect.left) return false;
+          parent = parent.parentNode;
+        } while (parent != this.document.body);
+        // Check its within the document viewport
+        if (rect.top >= (this.window.innerHeight || this.document.documentElement.clientHeight)) return false;
+        if (rect.bottom <= 0) return false;
+        if (rect.left >= (this.window.innerWidth || this.document.documentElement.clientWidth)) return false;
+        if (rect.right <= 0) return false;
+        return true;
+    }
+
+    checkViewport = () => {
+        this.findSvgElement();
+        let previousValue = this.isInViewport;
+        this.isInViewport = this.isElementInViewport(this.svgElement);
+        if(previousValue !== this.isInViewport) {
+            this.onViewportChanged.emit({oldValue: previousValue, newValue: this.isInViewport});
+        }
+    }
+
+    onScroll = (event: Event) => {
+        this.checkViewport();
+    }
+
+    loadEventsForLazyMode = () => {
+        if(this.options.lazy){
+            this.document.addEventListener('scroll', this.onScroll, true);
+            this.window.addEventListener('resize', this.onScroll, true);
+            if(this._viewportChangedSubscriber === null){
+                this._viewportChangedSubscriber = this.onViewportChanged.subscribe(({oldValue, newValue}) => {
+                    newValue ? this.render() : null;
+                });
+            }
+            // svgElement must be created in DOM before being checked.
+            // Is there a better way to check the existence of svgElemnt?
+            let _timer = timer(0, 50).subscribe(()=>{
+                this.svgElement === null ? this.checkViewport() : _timer.unsubscribe();
+            })
+        }
+    }
+
+    unloadEventsForLazyMode = () => {
+        // Remove event listeners
+        this.document.removeEventListener('scroll', this.onScroll, true);
+        this.window.removeEventListener('resize', this.onScroll, true);
+        // Unsubscribe onViewportChanged
+        if(this._viewportChangedSubscriber !== null){
+            this._viewportChangedSubscriber.unsubscribe();
+            this._viewportChangedSubscriber = null;
+        }
+    }
+
+    ngOnInit(){
+        this.loadEventsForLazyMode();
+    }
+
+    ngOnDestroy(){
+        this.unloadEventsForLazyMode();
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        
         this.render();
+
+        if('lazy' in changes){
+            changes.lazy.currentValue ? this.loadEventsForLazyMode() : this.unloadEventsForLazyMode();
+        }
+
+    }
+    
+    constructor(defaultOptions: CircleProgressOptions, private elRef: ElementRef, @Inject(DOCUMENT) private document: Document) {
+        this.document = document;
+        this.window = this.document.defaultView;
+        Object.assign(this.options, defaultOptions);
+        Object.assign(this.defaultOptions, defaultOptions);
     }
 
 }
