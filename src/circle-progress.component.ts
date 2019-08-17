@@ -111,7 +111,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     responsive = false;
     startFromZero = true;
     showZeroOuterStroke = true;
-    lazy = true;
+    lazy = false;
 }
 
 /** @dynamic Prevent compiling error when using type `Document` https://github.com/angular/angular/issues/20351 */

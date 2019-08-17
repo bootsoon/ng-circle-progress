@@ -138,7 +138,7 @@ animateTitle | `boolean` | `true` | Whether to animate the title when rendering
 animateSubtitle | `boolean` | `false` | Whether to animate the subtitle when rendering
 animationDuration | `number` | `500` | Duration of animation in microseconds
 class | `string` | `''` | CSS class name for SVG element
-lazy | `boolean` | `true` | Pauses when out of viewport
+lazy | `boolean` | `false` | Pauses when out of viewport
 
 
 ```typescript
