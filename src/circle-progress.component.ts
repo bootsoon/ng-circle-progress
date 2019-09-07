@@ -722,7 +722,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
 
     }
     
-    constructor(defaultOptions: CircleProgressOptions, private elRef: ElementRef, @Inject(DOCUMENT) private document: Document) {
+    constructor(defaultOptions: CircleProgressOptions, private elRef: ElementRef, @Inject(DOCUMENT) private document: any) {
         this.document = document;
         this.window = this.document.defaultView;
         Object.assign(this.options, defaultOptions);
