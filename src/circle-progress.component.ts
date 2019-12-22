@@ -144,7 +144,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                         [attr.cx]="svg.backgroundCircle.cx"
                         [attr.cy]="svg.backgroundCircle.cy"
                         [attr.r]="svg.backgroundCircle.r"
-                        attr.fill="url(#{{svg.radialGradient.id}})"
+                        attr.fill="url({{window.location.href}}#{{svg.radialGradient.id}})"
                         [attr.fill-opacity]="svg.backgroundCircle.fillOpacity"
                         [attr.stroke]="svg.backgroundCircle.stroke"
                         [attr.stroke-width]="svg.backgroundCircle.strokeWidth"/>
@@ -165,7 +165,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                         [attr.fill]="svg.path.fill"/>
                 <path *ngIf="options.outerStrokeGradient"
                         [attr.d]="svg.path.d"
-                        attr.stroke="url(#{{svg.outerLinearGradient.id}})"
+                        attr.stroke="url({{window.location.href}}#{{svg.outerLinearGradient.id}})"
                         [attr.stroke-width]="svg.path.strokeWidth"
                         [attr.stroke-linecap]="svg.path.strokeLinecap"
                         [attr.fill]="svg.path.fill"/>
