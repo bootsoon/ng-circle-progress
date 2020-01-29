@@ -1,6 +1,6 @@
 {
-  "name": "ng-circle-progress",
-  "version": "1.5.0",
+  "name": "ng-circle-progress-mtp",
+  "version": "1.1.0",
   "scripts": {
     "build": "ng-packagr -p ng-package.json",
     "build:watch": "npm run build -- -w",
