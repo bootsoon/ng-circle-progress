@@ -1,5 +1,7 @@
 # ng-circle-progress
 
+This is a fork of ng-circle-progress, we changed a code a bit to work as we excepted. 
+
 ## Demo
 
 [Try out the demo!](https://bootsoon.github.io/ng-circle-progress/)
