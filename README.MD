@@ -1,4 +1,4 @@
-# NgCircleProgressLibrary
+# ng-circle-progress
 
 A simple demo app using ng-circle-progress.
 
