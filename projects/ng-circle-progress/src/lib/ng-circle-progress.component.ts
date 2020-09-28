@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, OnChanges, Output, Inject, OnInit, OnDestroy, ElementRef, SimpleChanges} from '@angular/core';
-import {DOCUMENT} from '@angular/common';
-import {Subscription, timer} from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, Output, Inject, OnInit, OnDestroy, ElementRef, SimpleChanges } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Subscription, timer } from 'rxjs';
 
 export interface CircleProgressOptionsInterface {
     class?: string;
@@ -40,7 +40,7 @@ export interface CircleProgressOptionsInterface {
     subtitleFontWeight?: string;
     imageSrc?: string;
     imageHeight?: number;
-    imageWidth?: number;    
+    imageWidth?: number;
     animation?: boolean;
     animateTitle?: boolean;
     animateSubtitle?: boolean;
@@ -274,7 +274,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
     @Input() responsive: boolean;
     @Input() startFromZero: boolean;
     @Input() showZeroOuterStroke: boolean;
-    
+
     @Input() lazy: boolean;
 
     @Input('options') templateOptions: CircleProgressOptions;
@@ -284,7 +284,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
     // whether <svg> is in viewport
     isInViewport: Boolean = false;
     // event for notifying viewport change caused by scrolling or resizing
-    onViewportChanged: EventEmitter<{oldValue: Boolean, newValue: Boolean}> = new EventEmitter;
+    onViewportChanged: EventEmitter<{ oldValue: Boolean, newValue: Boolean }> = new EventEmitter;
     window: Window;
     _viewportChangedSubscriber: Subscription = null;
 
@@ -298,11 +298,11 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
 
         this.applyOptions();
 
-        if(this.options.lazy){
+        if (this.options.lazy) {
             // Draw svg if it doesn't exist
             this.svgElement === null && this.draw(this._lastPercent);
             // Draw it only when it's in the viewport
-            if(this.isInViewport){
+            if (this.isInViewport) {
                 // Draw it at the latest position when I am in.
                 if (this.options.animation && this.options.animationDuration > 0) {
                     this.animate(this._lastPercent, this.options.percent);
@@ -324,7 +324,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         let angleInRadius = angleInDegrees * Math.PI / 180;
         let x = centerX + Math.sin(angleInRadius) * radius;
         let y = centerY - Math.cos(angleInRadius) * radius;
-        return {x: x, y: y};
+        return { x: x, y: y };
     };
     draw = (percent: number) => {
         // make percent reasonable
@@ -337,9 +337,9 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
             boxSize += (this.options.backgroundStrokeWidth * 2 + this.max(0, this.options.backgroundPadding * 2));
         }
         // the centre of the circle
-        let centre = {x: boxSize / 2, y: boxSize / 2};
+        let centre = { x: boxSize / 2, y: boxSize / 2 };
         // the start point of the arc
-        let startPoint = {x: centre.x, y: centre.y - this.options.radius};
+        let startPoint = { x: centre.x, y: centre.y - this.options.radius };
         // get the end point of the arc
         let endPoint = this.polarToCartesian(centre.x, centre.y, this.options.radius, 360 * (this.options.clockwise ?
             circlePercent :
@@ -430,19 +430,19 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         // calc dy for each tspan for title
         if (this.options.showTitle) {
             for (let span of title.texts) {
-                title.tspans.push({span: span, dy: this.getRelativeY(rowNum, rowCount)});
+                title.tspans.push({ span: span, dy: this.getRelativeY(rowNum, rowCount) });
                 rowNum++;
             }
         }
         // calc dy for each tspan for subtitle
         if (this.options.showSubtitle) {
             for (let span of subtitle.texts) {
-                subtitle.tspans.push({span: span, dy: this.getRelativeY(rowNum, rowCount)})
+                subtitle.tspans.push({ span: span, dy: this.getRelativeY(rowNum, rowCount) })
                 rowNum++;
             }
         }
         // create ID for gradient element
-        if (null === this._gradientUUID){
+        if (null === this._gradientUUID) {
             this._gradientUUID = this.uuid();
         }
         // Bring it all together
@@ -536,7 +536,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         if (step < 1) {
             step = 1;
         }
-        return {times: times, step: step, interval: interval};
+        return { times: times, step: step, interval: interval };
     };
     animate = (previousPercent: number, currentPercent: number) => {
         if (this._timerSubscription && !this._timerSubscription.closed) {
@@ -544,9 +544,9 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         }
         let fromPercent = this.options.startFromZero ? 0 : previousPercent;
         let toPercent = currentPercent;
-        let {step: step, interval: interval} = this.getAnimationParameters(fromPercent, toPercent);
+        let { step: step, interval: interval } = this.getAnimationParameters(fromPercent, toPercent);
         let count = fromPercent;
-        if(fromPercent < toPercent){
+        if (fromPercent < toPercent) {
             this._timerSubscription = timer(0, interval).subscribe(() => {
                 count += step;
                 if (count <= toPercent) {
@@ -561,7 +561,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
                     this._timerSubscription.unsubscribe();
                 }
             });
-        }else{
+        } else {
             this._timerSubscription = timer(0, interval).subscribe(() => {
                 count -= step;
                 if (count >= toPercent) {
@@ -621,10 +621,10 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
     private uuid = () => {
         // https://www.w3resource.com/javascript-exercises/javascript-math-exercise-23.php
         var dt = new Date().getTime();
-        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = (dt + Math.random()*16)%16 | 0;
-            dt = Math.floor(dt/16);
-            return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (dt + Math.random() * 16) % 16 | 0;
+            dt = Math.floor(dt / 16);
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
         return uuid;
     }
@@ -633,27 +633,27 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         return (this._timerSubscription && !this._timerSubscription.closed);
     }
 
-    public findSvgElement = function() {
-        if(this.svgElement === null){
+    public findSvgElement = function () {
+        if (this.svgElement === null) {
             let tags = this.elRef.nativeElement.getElementsByTagName('svg');
-            if(tags.length>0){
+            if (tags.length > 0) {
                 this.svgElement = tags[0];
             }
         }
     }
 
-    private isElementInViewport (el) : Boolean {
+    private isElementInViewport(el): Boolean {
         // Return false if el has not been created in page.
-        if(el === null || el === undefined) return false;
+        if (el === null || el === undefined) return false;
         // Check if the element is out of view due to a container scrolling
         let rect = el.getBoundingClientRect(), parent = el.parentNode, parentRect;
         do {
-          parentRect = parent.getBoundingClientRect();
-          if (rect.top >= parentRect.bottom) return false;
-          if (rect.bottom <= parentRect.top) return false;
-          if (rect.left >= parentRect.right) return false;
-          if (rect.right <= parentRect.left) return false;
-          parent = parent.parentNode;
+            parentRect = parent.getBoundingClientRect();
+            if (rect.top >= parentRect.bottom) return false;
+            if (rect.bottom <= parentRect.top) return false;
+            if (rect.left >= parentRect.right) return false;
+            if (rect.right <= parentRect.left) return false;
+            parent = parent.parentNode;
         } while (parent != this.document.body);
         // Check its within the document viewport
         if (rect.top >= (this.window.innerHeight || this.document.documentElement.clientHeight)) return false;
@@ -667,8 +667,8 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         this.findSvgElement();
         let previousValue = this.isInViewport;
         this.isInViewport = this.isElementInViewport(this.svgElement);
-        if(previousValue !== this.isInViewport) {
-            this.onViewportChanged.emit({oldValue: previousValue, newValue: this.isInViewport});
+        if (previousValue !== this.isInViewport) {
+            this.onViewportChanged.emit({ oldValue: previousValue, newValue: this.isInViewport });
         }
     }
 
@@ -677,17 +677,17 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     loadEventsForLazyMode = () => {
-        if(this.options.lazy){
+        if (this.options.lazy) {
             this.document.addEventListener('scroll', this.onScroll, true);
             this.window.addEventListener('resize', this.onScroll, true);
-            if(this._viewportChangedSubscriber === null){
-                this._viewportChangedSubscriber = this.onViewportChanged.subscribe(({oldValue, newValue}) => {
+            if (this._viewportChangedSubscriber === null) {
+                this._viewportChangedSubscriber = this.onViewportChanged.subscribe(({ oldValue, newValue }) => {
                     newValue ? this.render() : null;
                 });
             }
             // svgElement must be created in DOM before being checked.
             // Is there a better way to check the existence of svgElemnt?
-            let _timer = timer(0, 50).subscribe(()=>{
+            let _timer = timer(0, 50).subscribe(() => {
                 this.svgElement === null ? this.checkViewport() : _timer.unsubscribe();
             })
         }
@@ -698,30 +698,30 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         this.document.removeEventListener('scroll', this.onScroll, true);
         this.window.removeEventListener('resize', this.onScroll, true);
         // Unsubscribe onViewportChanged
-        if(this._viewportChangedSubscriber !== null){
+        if (this._viewportChangedSubscriber !== null) {
             this._viewportChangedSubscriber.unsubscribe();
             this._viewportChangedSubscriber = null;
         }
     }
 
-    ngOnInit(){
+    ngOnInit() {
         this.loadEventsForLazyMode();
     }
 
-    ngOnDestroy(){
+    ngOnDestroy() {
         this.unloadEventsForLazyMode();
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        
+
         this.render();
 
-        if('lazy' in changes){
+        if ('lazy' in changes) {
             changes.lazy.currentValue ? this.loadEventsForLazyMode() : this.unloadEventsForLazyMode();
         }
 
     }
-    
+
     constructor(defaultOptions: CircleProgressOptions, private elRef: ElementRef, @Inject(DOCUMENT) private document: any) {
         this.document = document;
         this.window = this.document.defaultView;

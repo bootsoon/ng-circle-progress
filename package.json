@@ -1,68 +1,53 @@
 {
-  "name": "ng-circle-progress",
-  "version": "1.5.0",
+  "name": "ng-circle-progress-library",
+  "version": "0.0.0",
   "scripts": {
-    "build": "ng-packagr -p ng-package.json",
-    "build:watch": "npm run build -- -w",
-    "lint": "tslint --type-check --project tsconfig.json src/**/*.ts",
-    "test": "tsc && karma start"
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "postinstall": "ngcc"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bootsoon/ng-circle-progress"
-  },
-  "author": {
-    "name": "bootsoon",
-    "email": "bootsoon@aliyun.com"
-  },
-  "keywords": [
-    "angular",
-    "circle",
-    "progress",
-    "percentage"
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bootsoon/ng-circle-progress/issues"
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~10.1.3",
+    "@angular/cdk": "^10.2.2",
+    "@angular/common": "~10.1.3",
+    "@angular/compiler": "~10.1.3",
+    "@angular/core": "~10.1.3",
+    "@angular/forms": "~10.1.3",
+    "@angular/localize": "~10.1.3",
+    "@angular/platform-browser": "^10.1.3",
+    "@angular/platform-browser-dynamic": "^10.1.3",
+    "@angular/router": "~10.1.3",
+    "@ng-bootstrap/ng-bootstrap": "^7.0.0",
+    "bootstrap": "^4.5.0",
+    "jquery": "^3.5.1",
+    "rxjs": "~6.6.0",
+    "tslib": "^2.0.0",
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular/cli": "^8.2.2",
-    "@angular/common": "^8.2.2",
-    "@angular/compiler": "^8.2.2",
-    "@angular/compiler-cli": "^8.2.2",
-    "@angular/core": "^8.2.2",
-    "@angular/platform-browser": "^8.2.2",
-    "@angular/platform-browser-dynamic": "^8.2.2",
-    "@types/jasmine": "^3.4.0",
-    "@types/node": "^12.7.2",
-    "codelyzer": "^5.1.0",
-    "core-js": "^2.6.9",
-    "del": "^2.2.2",
-    "gulp": "^4.0.2",
-    "gulp-rollup": "^2.16.2",
-    "jasmine-core": "~2.5.2",
-    "jasmine-spec-reporter": "~3.2.0",
-    "karma": "^4.2.0",
-    "karma-chrome-launcher": "~2.0.0",
-    "karma-cli": "~1.0.1",
-    "karma-coverage-istanbul-reporter": "^0.2.0",
-    "karma-jasmine": "^1.1.2",
-    "karma-jasmine-html-reporter": "^0.2.2",
-    "ng-packagr": "^5.5.0",
-    "node-watch": "^0.5.9",
-    "protractor": "^6.0.0",
-    "rollup": "^1.19.4",
-    "run-sequence": "^2.2.1",
-    "rxjs": "^6.4.0",
-    "ts-node": "^8.3.0",
-    "tslint": "^5.18.0",
-    "typescript": "^3.5.3",
-    "zone.js": "^0.9.1"
-  },
-  "engines": {
-    "node": ">=6.0.0"
-  },
-  "peerDependencies": {
-    "@angular/core": ">=4.0.0"
+    "@angular-devkit/build-angular": "~0.1001.3",
+    "@angular/cli": "~10.1.3",
+    "@angular/compiler-cli": "~10.1.3",
+    "@types/node": "^12.11.1",
+    "@types/jasmine": "~3.5.0",
+    "@types/jasminewd2": "~2.0.3",
+    "codelyzer": "^6.0.0",
+    "jasmine-core": "~3.6.0",
+    "jasmine-spec-reporter": "~5.0.0",
+    "karma": "~5.0.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage-istanbul-reporter": "~3.0.2",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "^1.5.0",
+    "ng-packagr": "^10.1.0",
+    "protractor": "~7.0.0",
+    "ts-node": "~8.3.0",
+    "tslint": "~6.1.0",
+    "typescript": "~4.0.2"
   }
 }

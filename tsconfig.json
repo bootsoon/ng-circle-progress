@@ -1,17 +1,25 @@
-// This file is only used to configure the editor during development.
-// It is NOT used for building the library.
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./src",
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    "rootDir": "./src",
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "es2020",
     "lib": [
-      "es2015",
+      "es2018",
       "dom"
     ],
-    "skipLibCheck": true,
-    // Don't auto-discover @types/node, it results in a ///<reference in the .d.ts output
-    "types": []
+    "paths": {
+      "ng-circle-progress": [
+        "dist/ng-circle-progress/ng-circle-progress",
+        "dist/ng-circle-progress"
+      ]
+    }
   }
 }

@@ -1,0 +1,30 @@
+{
+  "name": "ng-circle-progress",
+  "version": "1.6.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bootsoon/ng-circle-progress"
+  },
+  "author": {
+    "name": "bootsoon",
+    "email": "bootsoon@aliyun.com"
+  },
+  "keywords": [
+    "angular",
+    "circle",
+    "progress",
+    "percentage"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bootsoon/ng-circle-progress/issues"
+  },
+  "peerDependencies": {
+    "@angular/common": ">=9.1.0",
+    "@angular/core": ">=9.1.0",
+    "rxjs": ">=6.4.0"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  }
+}
