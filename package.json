@@ -1,6 +1,6 @@
 {
-  "name": "ng-circle-progress-library",
-  "version": "0.0.0",
+  "name": "ng-circle-progress",
+  "version": "1.6.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
