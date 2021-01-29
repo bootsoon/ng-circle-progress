@@ -4,19 +4,19 @@ import { CircleProgressComponent, CircleProgressOptions } from 'ng-circle-progre
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-
   @ViewChild('circleProgress') circleProgress: CircleProgressComponent;
 
-  githubLink = "https://github.com/bootsoon/ng-circle-progress";
+  githubLink = 'https://github.com/bootsoon/ng-circle-progress';
 
   _timer = null;
 
   controlGroups = [
     {
-      groupName: 'Basic', controls: [
+      groupName: 'Basic',
+      controls: [
         { name: 'percent', type: 'range', min: 1, max: 1000, step: 0.01 },
         { name: 'maxPercent', type: 'range', min: 50, max: 1000, step: 10 },
         { name: 'toFixed', type: 'range', min: 0, max: 5, step: 1 },
@@ -30,10 +30,11 @@ export class AppComponent {
         { name: 'responsive', type: 'checkbox' },
         { name: 'startFromZero', type: 'checkbox' },
         { name: 'showZeroOuterStroke', type: 'checkbox' },
-      ]
+      ],
     },
     {
-      groupName: 'Size', controls: [
+      groupName: 'Size',
+      controls: [
         { name: 'radius', type: 'range', min: 20, max: 250, step: 1 },
         { name: 'backgroundPadding', type: 'range', min: -50, max: 50, step: 1 },
         { name: 'imageHeight', type: 'range', min: 20, max: 250, step: 1 },
@@ -41,7 +42,8 @@ export class AppComponent {
       ],
     },
     {
-      groupName: 'Color', controls: [
+      groupName: 'Color',
+      controls: [
         { name: 'backgroundGradient', type: 'checkbox' },
         { name: 'backgroundOpacity', type: 'range', min: 0, max: 1, step: 0.1 },
         { name: 'backgroundColor', type: 'color' },
@@ -57,33 +59,40 @@ export class AppComponent {
       ],
     },
     {
-      groupName: 'Stroke', controls: [
+      groupName: 'Stroke',
+      controls: [
         { name: 'outerStrokeWidth', type: 'range', min: 1, max: 50, step: 1 },
         { name: 'space', type: 'range', min: -20, max: 50, step: 1 },
         { name: 'innerStrokeWidth', type: 'range', min: 0, max: 50, step: 1 },
         { name: 'backgroundStrokeWidth', type: 'range', min: 0, max: 50, step: 1 },
-        { name: 'outerStrokeLinecap', type: 'select', options: ['butt', 'round', 'square', 'inherit'] },
+        {
+          name: 'outerStrokeLinecap',
+          type: 'select',
+          options: ['butt', 'round', 'square', 'inherit'],
+        },
       ],
     },
     {
-      groupName: 'Font', controls: [
+      groupName: 'Font',
+      controls: [
         { name: 'titleFontSize', type: 'range', min: 10, max: 100, step: 1 },
         { name: 'unitsFontSize', type: 'range', min: 10, max: 100, step: 1 },
         { name: 'subtitleFontSize', type: 'range', min: 10, max: 100, step: 1 },
         { name: 'titleFontWeight', type: 'range', min: 100, max: 900, step: 100 },
         { name: 'unitsFontWeight', type: 'range', min: 100, max: 900, step: 100 },
         { name: 'subtitleFontWeight', type: 'range', min: 100, max: 900, step: 100 },
-      ]
+      ],
     },
     {
-      groupName: 'Animation', controls: [
+      groupName: 'Animation',
+      controls: [
         { name: 'animation', type: 'checkbox' },
         { name: 'animateTitle', type: 'checkbox' },
         { name: 'lazy', type: 'checkbox' },
         { name: 'animationDuration', type: 'range', min: 0, max: 10000, step: 100 },
-      ]
+      ],
     },
-  ]
+  ];
 
   options = new CircleProgressOptions();
 
@@ -98,17 +107,17 @@ export class AppComponent {
     showSubtitle: false,
     subtitleFormat: (percent: number): string => {
       if (percent < 25) {
-        this.ngCircleOptions.outerStrokeColor = "red";
+        this.ngCircleOptions.outerStrokeColor = 'red';
       } else if (percent < 50) {
-        this.ngCircleOptions.outerStrokeColor = "yellow";
+        this.ngCircleOptions.outerStrokeColor = 'yellow';
       } else if (percent < 75) {
-        this.ngCircleOptions.outerStrokeColor = "blue";
+        this.ngCircleOptions.outerStrokeColor = 'blue';
       } else {
-        this.ngCircleOptions.outerStrokeColor = "green";
+        this.ngCircleOptions.outerStrokeColor = 'green';
       }
       return '';
-    }
-  }
+    },
+  };
 
   optionsA = {
     percent: 85,
@@ -116,9 +125,9 @@ export class AppComponent {
     showBackground: false,
     outerStrokeWidth: 10,
     innerStrokeWidth: 5,
-    subtitleFormat: false,  // clear subtitleFormat coming from other options, because Angular does not assign if variable is undefined. 
+    subtitleFormat: false, // clear subtitleFormat coming from other options, because Angular does not assign if variable is undefined.
     startFromZero: false,
-  }
+  };
 
   optionsB = {
     percent: 50,
@@ -136,9 +145,9 @@ export class AppComponent {
     units: ' Point',
     unitsColor: '#483500',
     subtitleColor: '#483500',
-    subtitleFormat: false,  // clear subtitleFormat coming from other options, because Angular does not assign if variable is undefined. 
+    subtitleFormat: false, // clear subtitleFormat coming from other options, because Angular does not assign if variable is undefined.
     startFromZero: false,
-  }
+  };
 
   optionsC = {
     percent: 99.99,
@@ -151,9 +160,9 @@ export class AppComponent {
     innerStrokeColor: '#32CD32',
     outerStrokeColor: '#FF6347',
     toFixed: 2,
-    subtitleFormat: false,  // clear subtitleFormat coming from other options, because Angular does not assign if variable is undefined. 
+    subtitleFormat: false, // clear subtitleFormat coming from other options, because Angular does not assign if variable is undefined.
     startFromZero: false,
-  }
+  };
 
   optionsD = {
     percent: 101,
@@ -172,12 +181,12 @@ export class AppComponent {
     startFromZero: false,
     subtitleFormat: (percent: number): string => {
       if (percent >= 100) {
-        return "Congratulations!"
+        return 'Congratulations!';
       } else {
-        return "Progress"
+        return 'Progress';
       }
-    }
-  }
+    },
+  };
 
   optionsE = {
     percent: 75,
@@ -185,8 +194,8 @@ export class AppComponent {
     outerStrokeWidth: 10,
     innerStrokeWidth: 10,
     space: -10,
-    outerStrokeColor: "#4882c2",
-    innerStrokeColor: "#e7e8ea",
+    outerStrokeColor: '#4882c2',
+    innerStrokeColor: '#e7e8ea',
     showBackground: false,
     title: 'UI',
     animateTitle: false,
@@ -199,8 +208,8 @@ export class AppComponent {
     lazy: true,
     subtitleFormat: (percent: number): string => {
       return `${percent}%`;
-    }
-  }
+    },
+  };
 
   optionsF = {
     percent: 60,
@@ -209,8 +218,8 @@ export class AppComponent {
     outerStrokeWidth: 2,
     innerStrokeWidth: 2,
     space: -2,
-    outerStrokeColor: "#808080",
-    innerStrokeColor: "#e7e8ea",
+    outerStrokeColor: '#808080',
+    innerStrokeColor: '#e7e8ea',
     showBackground: true,
     title: ['working', 'in', 'progress'],
     titleFontSize: 12,
@@ -221,8 +230,8 @@ export class AppComponent {
     animationDuration: 1000,
     subtitleFormat: (percent: number): string => {
       return `${percent}%`;
-    }
-  }
+    },
+  };
 
   optionsG = {
     percent: 75,
@@ -230,61 +239,61 @@ export class AppComponent {
     outerStrokeWidth: 5,
     innerStrokeWidth: 5,
     space: -5,
-    outerStrokeColor: "#76C2AF",
-    innerStrokeColor: "#ffffff",
+    outerStrokeColor: '#76C2AF',
+    innerStrokeColor: '#ffffff',
     showBackground: false,
     showImage: true,
-    imageSrc: "assets/images/music.svg",
+    imageSrc: 'assets/images/music.svg',
     imageHeight: 105,
     imageWidth: 105,
-  }
+  };
 
-  onValueChanged = (event) => {
+  onValueChanged = event => {
     try {
       if (event.srcElement.name === 'toFixed') {
         let toFixed = +event.srcElement.value;
         this.controlGroups[0].controls[0]['step'] = 1 / Math.pow(10, toFixed);
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
+  };
 
   copyOptions = (event, options) => {
     this.options = Object.assign({}, this.circleProgress.defaultOptions, options);
-  }
+  };
 
   resetOptions = () => {
     this.stop();
     this.options = new CircleProgressOptions();
-  }
+  };
 
   start = () => {
     if (this._timer !== null) {
       clearInterval(this._timer);
     }
     this._timer = window.setInterval(() => {
-      this.options.percent = (Math.round(Math.random() * 100));
+      this.options.percent = Math.round(Math.random() * 100);
     }, 1000);
-  }
+  };
 
   stop = () => {
     if (this._timer !== null) {
       clearInterval(this._timer);
       this._timer = null;
     }
-  }
+  };
 
   destroyed: Boolean = false;
 
   toggleDestroyed = () => {
     this.destroyed = !this.destroyed;
-  }
+  };
 
   getConfiguration = () => {
     // Didn't find a better way to fix "ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked."
     return {};
-  }
+  };
 
   ngAfterViewInit() {
     // Didn't find a better way to fix "ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked."
@@ -299,7 +308,7 @@ export class AppComponent {
       }
       return configurations;
     };
-  }  
+  }
 
   public get sourceCode() {
     let json = JSON.stringify(this.getConfiguration(), null, 16).replace(/\n}/g, '}');
@@ -319,6 +328,4 @@ export class AppComponent {
     `.replace(/\n[ ]{4}/g, '\n');
     return code;
   }
-
-
 }
