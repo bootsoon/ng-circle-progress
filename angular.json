@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ng-circle-progress-library": {
+    "ng-circle-progress-integration": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ng-circle-progress-library",
+            "outputPath": "dist/ng-circle-progress-integration",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -43,7 +43,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -66,18 +65,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ng-circle-progress-library:build"
+            "browserTarget": "ng-circle-progress-integration:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ng-circle-progress-library:build:production"
+              "browserTarget": "ng-circle-progress-integration:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ng-circle-progress-library:build"
+            "browserTarget": "ng-circle-progress-integration:build"
           }
         },
         "test": {
@@ -114,11 +113,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ng-circle-progress-library:serve"
+            "devServerTarget": "ng-circle-progress-integration:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ng-circle-progress-library:serve:production"
+              "devServerTarget": "ng-circle-progress-integration:serve:production"
             }
           }
         }
@@ -135,11 +134,6 @@
           "options": {
             "tsConfig": "projects/ng-circle-progress/tsconfig.lib.json",
             "project": "projects/ng-circle-progress/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/ng-circle-progress/tsconfig.lib.prod.json"
-            }
           }
         },
         "test": {
@@ -165,7 +159,7 @@
       }
     }
   },
-  "defaultProject": "ng-circle-progress-library",
+  "defaultProject": "ng-circle-progress-integration",
   "cli": {
     "analytics": false
   }
