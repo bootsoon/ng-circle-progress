@@ -210,7 +210,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
 })
 export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
 
-    @Output() onClick: EventEmitter<any> = new EventEmitter();
+    @Output() onClick = new EventEmitter<MouseEvent>();
 
     @Input() name: string;
     @Input() class: string;
@@ -284,7 +284,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
     // whether <svg> is in viewport
     isInViewport: Boolean = false;
     // event for notifying viewport change caused by scrolling or resizing
-    onViewportChanged: EventEmitter<{ oldValue: Boolean, newValue: Boolean }> = new EventEmitter;
+    onViewportChanged: EventEmitter<{ oldValue: Boolean, newValue: Boolean }> = new EventEmitter();
     window: Window;
     _viewportChangedSubscriber: Subscription = null;
 
@@ -578,12 +578,14 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
             });
         }
     };
-    emitClickEvent = (event: any) => {
+    emitClickEvent(event: MouseEvent): void {
         if (this.options.renderOnClick) {
             this.animate(0, this.options.percent);
         }
-        this.onClick.emit(event);
-    };
+        if (this.onClick.observers.length > 0) {
+          this.onClick.emit(event);
+        }
+    }
     private _timerSubscription: Subscription;
     private applyOptions = () => {
         // the options of <circle-progress> may change already
@@ -668,7 +670,9 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         let previousValue = this.isInViewport;
         this.isInViewport = this.isElementInViewport(this.svgElement);
         if (previousValue !== this.isInViewport) {
-            this.onViewportChanged.emit({ oldValue: previousValue, newValue: this.isInViewport });
+            if (this.onViewportChanged.observers.length > 0) {
+              this.onViewportChanged.emit({ oldValue: previousValue, newValue: this.isInViewport });
+            }
         }
     }
 
