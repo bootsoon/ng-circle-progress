@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, Inject, OnInit, OnDestroy, ElementRef, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, OnInit, OnDestroy, ElementRef, SimpleChanges, NgZone, Injector } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Subscription, timer } from 'rxjs';
 
@@ -114,7 +114,6 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     lazy = false;
 }
 
-/** @dynamic Prevent compiling error when using type `Document` https://github.com/angular/angular/issues/20351 */
 @Component({
     selector: 'circle-progress',
     template: `
@@ -635,7 +634,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         return (this._timerSubscription && !this._timerSubscription.closed);
     }
 
-    public findSvgElement = function () {
+    public findSvgElement(): void {
         if (this.svgElement === null) {
             let tags = this.elRef.nativeElement.getElementsByTagName('svg');
             if (tags.length > 0) {
@@ -670,7 +669,9 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         let previousValue = this.isInViewport;
         this.isInViewport = this.isElementInViewport(this.svgElement);
         if (previousValue !== this.isInViewport && this.onViewportChanged.observers.length > 0) {
-            this.onViewportChanged.emit({ oldValue: previousValue, newValue: this.isInViewport });
+            this.ngZone.run(() => {
+              this.onViewportChanged.emit({ oldValue: previousValue, newValue: this.isInViewport });
+            });
         }
     }
 
@@ -680,8 +681,10 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
 
     loadEventsForLazyMode = () => {
         if (this.options.lazy) {
-            this.document.addEventListener('scroll', this.onScroll, true);
-            this.window.addEventListener('resize', this.onScroll, true);
+            this.ngZone.runOutsideAngular(() => {
+              this.document.addEventListener('scroll', this.onScroll, true);
+              this.window.addEventListener('resize', this.onScroll, true);
+            });
             if (this._viewportChangedSubscriber === null) {
                 this._viewportChangedSubscriber = this.onViewportChanged.subscribe(({ oldValue, newValue }) => {
                     newValue ? this.render() : null;
@@ -724,8 +727,15 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
 
     }
 
-    constructor(defaultOptions: CircleProgressOptions, private elRef: ElementRef, @Inject(DOCUMENT) private document: any) {
-        this.document = document;
+    private document: Document;
+
+    constructor(
+      defaultOptions: CircleProgressOptions,
+      private ngZone: NgZone,
+      private elRef: ElementRef,
+      injector: Injector,
+    ) {
+        this.document = injector.get(DOCUMENT);
         this.window = this.document.defaultView;
         Object.assign(this.options, defaultOptions);
         Object.assign(this.defaultOptions, defaultOptions);
