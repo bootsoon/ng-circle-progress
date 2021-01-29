@@ -669,10 +669,8 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         this.findSvgElement();
         let previousValue = this.isInViewport;
         this.isInViewport = this.isElementInViewport(this.svgElement);
-        if (previousValue !== this.isInViewport) {
-            if (this.onViewportChanged.observers.length > 0) {
-              this.onViewportChanged.emit({ oldValue: previousValue, newValue: this.isInViewport });
-            }
+        if (previousValue !== this.isInViewport && this.onViewportChanged.observers.length > 0) {
+            this.onViewportChanged.emit({ oldValue: previousValue, newValue: this.isInViewport });
         }
     }
 
