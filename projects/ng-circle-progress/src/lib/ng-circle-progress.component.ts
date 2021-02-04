@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, Inject, OnInit, OnDestroy, ElementRef, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, OnInit, OnDestroy, ElementRef, SimpleChanges, NgZone, Injector } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Subscription, timer } from 'rxjs';
 
@@ -114,7 +114,6 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     lazy = false;
 }
 
-/** @dynamic Prevent compiling error when using type `Document` https://github.com/angular/angular/issues/20351 */
 @Component({
     selector: 'circle-progress',
     template: `
@@ -210,7 +209,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
 })
 export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
 
-    @Output() onClick: EventEmitter<any> = new EventEmitter();
+    @Output() onClick = new EventEmitter<MouseEvent>();
 
     @Input() name: string;
     @Input() class: string;
@@ -284,7 +283,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
     // whether <svg> is in viewport
     isInViewport: Boolean = false;
     // event for notifying viewport change caused by scrolling or resizing
-    onViewportChanged: EventEmitter<{ oldValue: Boolean, newValue: Boolean }> = new EventEmitter;
+    onViewportChanged: EventEmitter<{ oldValue: Boolean, newValue: Boolean }> = new EventEmitter();
     window: Window;
     _viewportChangedSubscriber: Subscription = null;
 
@@ -578,12 +577,14 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
             });
         }
     };
-    emitClickEvent = (event: any) => {
+    emitClickEvent(event: MouseEvent): void {
         if (this.options.renderOnClick) {
             this.animate(0, this.options.percent);
         }
-        this.onClick.emit(event);
-    };
+        if (this.onClick.observers.length > 0) {
+          this.onClick.emit(event);
+        }
+    }
     private _timerSubscription: Subscription;
     private applyOptions = () => {
         // the options of <circle-progress> may change already
@@ -633,7 +634,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         return (this._timerSubscription && !this._timerSubscription.closed);
     }
 
-    public findSvgElement = function () {
+    public findSvgElement(): void {
         if (this.svgElement === null) {
             let tags = this.elRef.nativeElement.getElementsByTagName('svg');
             if (tags.length > 0) {
@@ -667,8 +668,10 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         this.findSvgElement();
         let previousValue = this.isInViewport;
         this.isInViewport = this.isElementInViewport(this.svgElement);
-        if (previousValue !== this.isInViewport) {
-            this.onViewportChanged.emit({ oldValue: previousValue, newValue: this.isInViewport });
+        if (previousValue !== this.isInViewport && this.onViewportChanged.observers.length > 0) {
+            this.ngZone.run(() => {
+              this.onViewportChanged.emit({ oldValue: previousValue, newValue: this.isInViewport });
+            });
         }
     }
 
@@ -678,8 +681,10 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
 
     loadEventsForLazyMode = () => {
         if (this.options.lazy) {
-            this.document.addEventListener('scroll', this.onScroll, true);
-            this.window.addEventListener('resize', this.onScroll, true);
+            this.ngZone.runOutsideAngular(() => {
+              this.document.addEventListener('scroll', this.onScroll, true);
+              this.window.addEventListener('resize', this.onScroll, true);
+            });
             if (this._viewportChangedSubscriber === null) {
                 this._viewportChangedSubscriber = this.onViewportChanged.subscribe(({ oldValue, newValue }) => {
                     newValue ? this.render() : null;
@@ -722,8 +727,15 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
 
     }
 
-    constructor(defaultOptions: CircleProgressOptions, private elRef: ElementRef, @Inject(DOCUMENT) private document: any) {
-        this.document = document;
+    private document: Document;
+
+    constructor(
+      defaultOptions: CircleProgressOptions,
+      private ngZone: NgZone,
+      private elRef: ElementRef,
+      injector: Injector,
+    ) {
+        this.document = injector.get(DOCUMENT);
         this.window = this.document.defaultView;
         Object.assign(this.options, defaultOptions);
         Object.assign(this.defaultOptions, defaultOptions);
