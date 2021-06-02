@@ -40,7 +40,7 @@ export interface CircleProgressOptionsInterface {
     subtitleFontWeight?: string;
     imageSrc?: string;
     imageHeight?: number;
-    imageWidth?: number;    
+    imageWidth?: number;
     animation?: boolean;
     animateTitle?: boolean;
     animateSubtitle?: boolean;
@@ -148,7 +148,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                         [attr.fill-opacity]="svg.backgroundCircle.fillOpacity"
                         [attr.stroke]="svg.backgroundCircle.stroke"
                         [attr.stroke-width]="svg.backgroundCircle.strokeWidth"/>
-            </ng-container>            
+            </ng-container>
             <circle *ngIf="options.showInnerStroke"
                     [attr.cx]="svg.circle.cx"
                     [attr.cy]="svg.circle.cy"
@@ -198,7 +198,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                            [attr.fill]="svg.subtitle.color">{{tspan.span}}</tspan>
                 </ng-container>
             </text>
-            <image *ngIf="options.showImage" preserveAspectRatio="none" 
+            <image *ngIf="options.showImage" preserveAspectRatio="none"
                 [attr.height]="svg.image.height"
                 [attr.width]="svg.image.width"
                 [attr.xlink:href]="svg.image.src"
@@ -274,7 +274,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
     @Input() responsive: boolean;
     @Input() startFromZero: boolean;
     @Input() showZeroOuterStroke: boolean;
-    
+
     @Input() lazy: boolean;
 
     @Input('options') templateOptions: CircleProgressOptions;
@@ -713,7 +713,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        
+
         this.render();
 
         if('lazy' in changes){
@@ -721,7 +721,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
         }
 
     }
-    
+
     constructor(defaultOptions: CircleProgressOptions, private elRef: ElementRef, @Inject(DOCUMENT) private document: any) {
         this.document = document;
         this.window = this.document.defaultView;
