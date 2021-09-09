@@ -16,7 +16,7 @@ export * from './circle-progress.component';
   ]
 })
 export class NgCircleProgressModule {
-  static forRoot(options: CircleProgressOptionsInterface = {}): ModuleWithProviders {
+  static forRoot(options: CircleProgressOptionsInterface = {}): ModuleWithProviders<any> {
     return {
       ngModule: NgCircleProgressModule,
       providers: [
