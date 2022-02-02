@@ -177,6 +177,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                   [attr.text-anchor]="svg.title.textAnchor">
                 <ng-container *ngIf="options.showTitle">
                     <tspan *ngFor="let tspan of svg.title.tspans"
+                           class="circle-progress-title"
                            [attr.x]="svg.title.x"
                            [attr.y]="svg.title.y"
                            [attr.dy]="tspan.dy"
@@ -190,6 +191,7 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
                        [attr.fill]="svg.units.color">{{svg.units.text}}</tspan>
                 <ng-container *ngIf="options.showSubtitle">
                     <tspan *ngFor="let tspan of svg.subtitle.tspans"
+                           class="circle-progress-subtitle"
                            [attr.x]="svg.subtitle.x"
                            [attr.y]="svg.subtitle.y"
                            [attr.dy]="tspan.dy"
