@@ -95,8 +95,8 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
     subtitleFontSize = '10';
     subtitleFontWeight = 'normal';
     imageSrc = undefined;
-    imageHeight = undefined;
-    imageWidth = undefined;
+    imageHeight = 0;
+    imageWidth = 0;
     animation = true;
     animateTitle = true;
     animateSubtitle = false;
