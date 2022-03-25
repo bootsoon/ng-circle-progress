@@ -1,6 +1,6 @@
 # ng-circle-progress
 
-A simple demo app using ng-circle-progress.
+A simple circle progress component created for angular based only on SVG graphics and has various of options to customize it.
 
 [![demo](https://raw.githubusercontent.com/bootsoon/ng-circle-progress/master/demo.png)](https://bootsoon.github.io/ng-circle-progress/)
 

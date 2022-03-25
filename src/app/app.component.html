@@ -1,15 +1,14 @@
-<div class="jumbotron">
-  <div class="container">
-    <h2>NgCircleProgress Demo</h2>
-    <hr class="my-4">
-    <p>A simple circle progress component created for Angular based on SVG Graphics.</p>
-    <a class="btn btn-lg btn-primary" [href]="githubLink">View on GitHub</a>
-  </div>
+<div class="py-2 mb-2 bg-light rounded-3">
+    <div class="container py-4">
+        <h2 class="display-6">NgCircleProgress Demo</h2>
+        <p class="col-md-12 fs-5 my-4">A simple circle progress component created for Angular based on SVG Graphics.</p>
+        <a class="btn btn-lg btn-primary" [href]="githubLink">View on GitHub</a>
+    </div>
 </div>
 
 <div class="container">
   <div class="row">
-    <div class="col-12" style="margin-bottom:30px;">
+    <div class="col-12 my-4">
       <circle-progress *ngIf="!destroyed" name="A" [options]="optionsA" [renderOnClick]="false" class="copy"
         (click)="copyOptions($event, optionsA)"></circle-progress>
       <circle-progress name="B" [options]="optionsB" [renderOnClick]="false" class="copy"
@@ -29,11 +28,11 @@
 
   <div class="row">
 
-    <div class="col-5">
+    <div class="col-4">
 
       <div class="card text-center">
         <div class="card-header">
-          <b>ng circle progress</b>
+          ng circle progress
         </div>
         <div class="card-body">
           <div class="card-text">
@@ -65,55 +64,90 @@
           </div>
         </div>
         <div class="card-footer">
-          <div class="btn-group" role="group">
-            <a href="javascript:;" class="btn btn-link" role="button" (click)="stop()" *ngIf="_timer!==null">Stop</a>
-            <a href="javascript:;" class="btn btn-link" role="button" (click)="start()" *ngIf="_timer===null"
-              title="Start changing percent randomly">Start</a>
-            <a href="javascript:;" class="btn btn-link" role="button" (click)="resetOptions()">Reset</a>
-          </div>
+            <a href="javascript:;" class="btn btn-dark btn-sm me-md-2" role="button" (click)="stop()" *ngIf="_timer!==null">Stop</a>
+            <a href="javascript:;" class="btn btn-secondary btn-sm me-md-2" role="button" (click)="start()" *ngIf="_timer===null"
+                title="Start changing percent randomly">Start</a>
+            <a href="javascript:;" class="btn btn-secondary btn-sm me-md-2" role="button" (click)="resetOptions()">Reset</a>
         </div>
       </div>
     </div>
 
-    <div class="col-7">
+    <div class="col-8">
 
-      <ul class="nav nav-tabs" role="tablist">
+      <ul class="nav nav-tabs border-bottom-0" role="tablist">
         <li role="nav-item" role="presentation" *ngFor="let group of controlGroups; let first=first">
           <a class="nav-link" href="#{{group.groupName}}" [attr.aria-controls]="group.groupName"
-            [ngClass]="{active: first}" role="tab" data-toggle="tab">{{group.groupName}}</a>
+            [ngClass]="{active: first}" role="tab" data-bs-toggle="tab">{{group.groupName}}</a>
         </li>
         <li role="nav-item" role="presentation">
-          <a class="nav-link" href="#typescript" aria-controls="typesript" role="tab" data-toggle="tab">TypeScript</a>
+          <a class="nav-link" href="#typescript" aria-controls="typesript" role="tab" data-bs-toggle="tab">TypeScript</a>
         </li>
       </ul>
 
       <div class="tab-content">
-        <div role="tabpanel" class="tab-pane fade" [ngClass]="{show:first, active: first}" id="{{group.groupName}}"
+        <div role="tabpanel" class="tab-pane fade" [ngClass]="{show:first, active:first}" id="{{group.groupName}}"
           *ngFor="let group of controlGroups; let first=first">
           <div class="card">
             <div class="card-body">
-              <form>
-                <div class="form-group row" *ngFor="let control of group.controls">
-                  <div class="col-sm-4 align-items-right">
-                    <input *ngIf="control.type==='checkbox'" [id]="control.name" [name]="control.name" type="checkbox"
-                      [(ngModel)]="options[control.name]" (change)="onValueChanged($event)" class="form-control">
-                    <input *ngIf="control.type==='range'" [id]="control.name" [name]="control.name"
-                      [type]="control.type" [(ngModel)]="options[control.name]" [max]="control.max" [min]="control.min"
-                      [step]="control.step" (change)="onValueChanged($event)" class="form-control">
-                    <select class="form-control" *ngIf="control.type==='select'" [id]="control.name"
-                      [name]="control.name" [(ngModel)]="options[control.name]" (change)="onValueChanged($event)">
+              <ng-template ngFor let-control [ngForOf]="group.controls">
+                <div *ngIf="control.type==='checkbox'" class="form-check form-switch row mb-2">
+                  <div class="col-12">
+                    <input class="form-check-input" type="checkbox" [id]="control.name" [name]="control.name"
+                        [(ngModel)]="options[control.name]" (change)="onValueChanged($event)" >
+                    <label class="form-form-label" for="{{control.name}}" [ngClass]="{'form-check-label':control.type==='checkbox'}">
+                      <code>{{control.name}}<span class="text-muted"> = {{options[control.name]}}</span></code>
+                    </label>
+                  </div>
+                </div>
+                <div *ngIf="control.type==='range'" class="row">
+                  <div class="col-2">
+                    <input class="form-range col-2" [id]="control.name" [name]="control.name"
+                    [type]="control.type" [(ngModel)]="options[control.name]" [max]="control.max" [min]="control.min"
+                    [step]="control.step" (change)="onValueChanged($event)">
+                    </div>
+                  <div class="col-10">
+                    <label for="{{control.name}}" class="form-form-label">
+                      <code>{{control.name}}<span class="text-muted">={{options[control.name]}}</span></code>
+                    </label>
+                  </div>
+                </div>
+                <div *ngIf="control.type==='select'" class="row mb-2">
+                  <div class="col-2">
+                    <select class="form-select form-select-sm" [id]="control.name" [name]="control.name"
+                      [(ngModel)]="options[control.name]" (change)="onValueChanged($event)">
                       <option *ngFor="let value of control.options">{{value}}</option>
                     </select>
+                  </div>
+                  <div class="col-10">
+                    <label for="{{control.name}}" class="form-form-label">
+                      <code>{{control.name}}<span class="text-muted">={{options[control.name]}}</span></code>
+                    </label>
+                  </div>
+                </div>
+                <div *ngIf="control.type==='color'" class="row mb-2">
+                  <div class="col-1">
+                    <input class="form-control form-control-color" type="color"
+                      [id]="control.name" [name]="control.name" [(ngModel)]="options[control.name]" (change)="onValueChanged($event)">
+                  </div>
+                  <div class="col-11">
+                    <label for="{{control.name}}" class="form-form-label mt-2">
+                      <code>{{control.name}}<span class="text-muted"> = {{options[control.name]}}</span></code>
+                    </label>
+                  </div>
+                </div>
+                <div *ngIf="!['range', 'checkbox', 'select', 'color'].includes(control.type)" class="row mb-2">
+                  <div class="col-2">
                     <input class="form-control"
-                      *ngIf="control.type!=='range' && control.type!=='checkbox' && control.type!=='select'"
                       [id]="control.name" [name]="control.name" [type]="control.type"
                       [(ngModel)]="options[control.name]" (change)="onValueChanged($event)">
                   </div>
-                  <label for="{{control.name}}"
-                    class="col-sm-8 col-form-label"><code>{{control.name}}<span class="text-muted">={{options[control.name]}}</span></code>
-                  </label>
+                  <div class="col-10">
+                    <label for="{{control.name}}" class="form-form-label">
+                      <code>{{control.name}}<span class="text-muted"> = {{options[control.name]}}</span></code>
+                    </label>
+                  </div>
                 </div>
-              </form>
+              </ng-template>
             </div>
           </div>
         </div>

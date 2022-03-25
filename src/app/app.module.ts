@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { AppComponent } from './app.component';
 
-
 @NgModule({
   declarations: [
     AppComponent

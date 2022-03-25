@@ -16,10 +16,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'ng-circle-progress-library'`, () => {
+  it(`should have as githubLink 'https://github.com/bootsoon/ng-circle-progress'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('ng-circle-progress-library');
+    expect(app.githubLink).toEqual('https://github.com/bootsoon/ng-circle-progress');
   });
 
   it('should render title', () => {

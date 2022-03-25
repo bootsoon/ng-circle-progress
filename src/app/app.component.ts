@@ -23,7 +23,6 @@ export class AppComponent {
         { name: 'showTitle', type: 'checkbox' },
         { name: 'showUnits', type: 'checkbox' },
         { name: 'showSubtitle', type: 'checkbox' },
-        { name: 'showImage', type: 'checkbox' },
         { name: 'showBackground', type: 'checkbox' },
         { name: 'showInnerStroke', type: 'checkbox' },
         { name: 'clockwise', type: 'checkbox' },
@@ -36,8 +35,6 @@ export class AppComponent {
       groupName: 'Size', controls: [
         { name: 'radius', type: 'range', min: 20, max: 250, step: 1 },
         { name: 'backgroundPadding', type: 'range', min: -50, max: 50, step: 1 },
-        { name: 'imageHeight', type: 'range', min: 20, max: 250, step: 1 },
-        { name: 'imageWidth', type: 'range', min: 20, max: 250, step: 1 },
       ],
     },
     {
@@ -73,6 +70,13 @@ export class AppComponent {
         { name: 'titleFontWeight', type: 'range', min: 100, max: 900, step: 100 },
         { name: 'unitsFontWeight', type: 'range', min: 100, max: 900, step: 100 },
         { name: 'subtitleFontWeight', type: 'range', min: 100, max: 900, step: 100 },
+      ]
+    },
+    {
+      groupName: 'Image', controls: [
+        { name: 'showImage', type: 'checkbox' },
+        { name: 'imageHeight', type: 'range', min: 20, max: 250, step: 1 },
+        { name: 'imageWidth', type: 'range', min: 20, max: 250, step: 1 },
       ]
     },
     {
