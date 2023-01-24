@@ -8,16 +8,22 @@
 
 ## About
 
-It is a simple circle progress component created for [angular](https://angular.io) based only on SVG graphics and has various of options to customize it.
+It is a simple circle progress component created for [angular](https://angular.io) based only on SVG graphics.
 
 ## Installation
 
 To install this library, run:
 
-### Angular 10 or Angular 9  projects
+### Angular 15 or Angular 14  projects
 
 ```bash
 $ npm install ng-circle-progress --save
+```
+
+### Angular 13 or Angular 12 or Angular 11 Angular 10 or Angular 9  projects
+
+```bash
+$ npm install ng-circle-progress@1.6.0 --save
 ```
 
 ### Angular 8 or Angular 7 or Angular 6  projects
@@ -176,11 +182,11 @@ Run `ng generate component component-name --project ng-circle-progress` to gener
 
 ## Build
 
-Run `ng build ng-circle-progress` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `ng build ng-circle-progress -c production` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Publishing
 
-After building your library with `ng build ng-circle-progress`, go to the dist folder `cd dist/ng-circle-progress` and run `npm publish`.
+After building your library with `ng build ng-circle-progress -c production`, go to the dist folder `cd dist/ng-circle-progress` and run `npm publish`.
 
 ## Running unit tests
 
