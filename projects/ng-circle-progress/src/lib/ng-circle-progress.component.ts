@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, OnInit, OnDestroy, ElementRef, SimpleChanges, NgZone, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, OnInit, OnDestroy, ElementRef, SimpleChanges, NgZone, Injector } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Subscription, timer } from 'rxjs';
 
@@ -116,6 +116,9 @@ export class CircleProgressOptions implements CircleProgressOptionsInterface {
 
 @Component({
     selector: 'circle-progress',
+    // Angular 22 makes OnPush the default for components that don't set a strategy. Keep the
+    // pre-22 behaviour explicitly; the view is also marked for check whenever the SVG is redrawn.
+    changeDetection: ChangeDetectionStrategy.Default,
     template: `
         <svg xmlns="http://www.w3.org/2000/svg" *ngIf="svg"
              [attr.viewBox]="svg.viewBox" preserveAspectRatio="xMidYMid meet"
@@ -497,6 +500,9 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
                 colorStop2: this.options.backgroundGradientStopColor === 'transparent' ? '#FFF' : this.options.backgroundGradientStopColor,
             }
         };
+        // draw() runs from an rxjs timer during the animation, outside any change detection pass,
+        // so an OnPush host (the default from Angular 22) would never render the new svg.
+        this.changeDetectorRef.markForCheck();
     };
     getAnimationParameters = (previousPercent: number, currentPercent: number) => {
         const MIN_INTERVAL = 10;
@@ -734,6 +740,7 @@ export class CircleProgressComponent implements OnChanges, OnInit, OnDestroy {
       private ngZone: NgZone,
       private elRef: ElementRef,
       injector: Injector,
+      private changeDetectorRef: ChangeDetectorRef,
     ) {
         this.document = injector.get(DOCUMENT);
         this.window = this.document.defaultView;
